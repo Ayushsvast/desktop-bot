@@ -1147,14 +1147,14 @@ async function send(text){
     if(full){
       history.push({role:'assistant',content:full});
       const aiEmotion=detectEmotion(full);if(aiEmotion)triggerEmotion(aiEmotion);
-      if(window.speechSynthesis&&full.length<2000){
+      if(window.speechSynthesis){
         speakText(full);
         busy=false;abortCtrl=null;
         return;
       }
     }
   }catch(err){if(err.name!=='AbortError')console.warn('API error:',err.message)}
-  finally{if(!ttsActive)setEyeState('idle');busy=false;abortCtrl=null}
+  finally{if(!ttsActive){setEyeState('idle');busy=false;abortCtrl=null}}
 }
 
 // ===================== SETTINGS =====================
@@ -1298,6 +1298,28 @@ micBtn.addEventListener('click',()=>{
 });
 
 // ===================== TTS OUTPUT =====================
+// ---- Chrome TTS warm-up: unlock speechSynthesis on first user gesture ----
+// Chrome on HTTPS blocks speechSynthesis unless triggered by a real user gesture.
+// We fire a silent 0-length utterance on the first pointer interaction to pre-warm it.
+let ttsUnlocked=false;
+function unlockTTS(){
+  if(ttsUnlocked||!window.speechSynthesis)return;
+  ttsUnlocked=true;
+  const warmup=new SpeechSynthesisUtterance('');
+  warmup.volume=0;
+  window.speechSynthesis.speak(warmup);
+}
+document.addEventListener('pointerdown',unlockTTS,{once:true});
+document.addEventListener('keydown',unlockTTS,{once:true});
+
+// ---- Chrome TTS keep-alive: Chrome pauses speechSynthesis after ~15s ----
+// Fix: call resume() periodically while TTS is active.
+setInterval(()=>{
+  if(window.speechSynthesis&&ttsActive&&window.speechSynthesis.paused){
+    window.speechSynthesis.resume();
+  }
+},5000);
+
 // ---- Soft female voice selection ----
 let softVoice=null;
 const PREFERRED_VOICES=[
