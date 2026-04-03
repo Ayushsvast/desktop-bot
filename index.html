@@ -1,407 +1,846 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Companion">
-<meta name="theme-color" content="#060610">
-<title>Companion</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#060610;
-  --glow:#00e5ff;
-  --glow-mid:rgba(0,229,255,0.35);
-  --glow-dim:rgba(0,229,255,0.12);
-  --text:#7dd3c0;
-  --text-dim:#3a6860;
-  --text-user:#9595a8;
-  --font:'Courier New',Courier,monospace;
-}
-html,body{
-  height:100%;background:var(--bg);color:var(--text);
-  font-family:var(--font);overflow:hidden;
-  -webkit-user-select:none;user-select:none;
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-}
-#app{display:flex;flex-direction:column;height:100vh;height:100dvh;padding-top:env(safe-area-inset-top)}
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Companion">
+  <meta name="theme-color" content="#060610">
+  <title>Companion</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* ---- FACE ---- */
-.face{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;overflow:hidden}
-.glow{
-  position:absolute;width:300px;height:220px;border-radius:50%;
-  background:radial-gradient(ellipse,var(--glow-dim),transparent 70%);
-  animation:breathe 5s ease-in-out infinite;pointer-events:none;
-  transition:transform 1.8s cubic-bezier(.25,.9,.5,1);will-change:transform;
-}
-@keyframes breathe{
-  0%,100%{opacity:.5;transform:scale(1)}
-  25%{opacity:.7;transform:scale(1.06)}
-  50%{opacity:.9;transform:scale(1.14)}
-  75%{opacity:.65;transform:scale(1.04)}
-}
-.eyes{
-  display:flex;gap:32px;position:relative;z-index:1;
-  transition:transform 1.8s cubic-bezier(.25,.9,.5,1);will-change:transform;
-}
-.eye{
-  position:relative;overflow:visible;
-  transition:transform .12s ease-out;
-}
-.eye.blink{transform:scaleY(.06)}
-.eye-svg{display:block;overflow:visible}
-.eye-svg .iris{transition:transform .08s linear}
-.eye-svg .pupil{transform-box:fill-box;transform-origin:center}
+    :root {
+      --bg: #060610;
+      --glow: #00e5ff;
+      --glow-mid: rgba(0, 229, 255, 0.35);
+      --glow-dim: rgba(0, 229, 255, 0.12);
+      --text: #7dd3c0;
+      --text-dim: #3a6860;
+      --text-user: #9595a8;
+      --font: 'Courier New', Courier, monospace;
+    }
 
-/* ---- MOOD DOT ---- */
-.mood-dot{
-  position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
-  width:12px;height:12px;border-radius:50%;
-  background:var(--glow);opacity:.35;cursor:pointer;z-index:10;
-  transition:opacity .3s,background .4s;box-shadow:0 0 8px var(--glow-dim);
-}
-.mood-dot:active{opacity:.8}
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
 
-/* ---- MOOD SELECTOR ---- */
-.mood-overlay{
-  position:fixed;inset:0;background:rgba(6,6,16,0.96);
-  display:flex;align-items:center;justify-content:center;
-  z-index:200;opacity:0;transition:opacity .4s ease;
-  pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-.mood-overlay.open{opacity:1;pointer-events:auto}
-.mood-panel{width:92%;max-width:420px;max-height:85vh;overflow-y:auto;scrollbar-width:none;padding:20px 0}
-.mood-panel::-webkit-scrollbar{display:none}
-.mood-title{text-align:center;font-size:13px;letter-spacing:.12em;text-transform:lowercase;color:var(--text-dim);margin-bottom:22px;font-weight:400}
-.mood-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 4px}
-.mood-card{
-  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);
-  border-radius:14px;padding:18px 10px 14px;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  transition:all .25s ease;position:relative;overflow:hidden;
-}
-.mood-card:active{transform:scale(.96);opacity:.7}
-.mood-card-preview{display:flex;gap:8px;align-items:center;height:30px}
-.mood-card-preview svg{overflow:visible}
-.mood-card-name{font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.55);text-transform:lowercase}
-.mood-card-desc{font-size:10px;color:rgba(255,255,255,.25);text-align:center;line-height:1.3}
-.mood-card.mood-card-random{grid-column:1/-1;flex-direction:row;justify-content:center;gap:12px;padding:14px}
-.mood-card-random .mood-card-name{font-size:13px}
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      padding-top: env(safe-area-inset-top)
+    }
 
-/* ---- PARTICLES CANVAS ---- */
-#particles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    /* ---- FACE ---- */
+    .face {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 0;
+      overflow: hidden
+    }
 
-/* ---- MIC BUTTON ---- */
-.mic-btn{
-  position:fixed;bottom:max(20px,env(safe-area-inset-bottom,10px));right:18px;
-  width:40px;height:40px;border-radius:50%;border:1.5px solid var(--glow);
-  background:rgba(0,0,0,0.4);color:var(--glow);cursor:pointer;z-index:50;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 12px var(--glow-dim),inset 0 0 8px var(--glow-dim);
-  transition:all .3s ease;-webkit-tap-highlight-color:transparent;
-}
-.mic-btn:active{transform:scale(0.9)}
-.mic-btn.listening{
-  animation:mic-pulse 1.2s ease-in-out infinite;
-  box-shadow:0 0 20px var(--glow-mid),inset 0 0 12px var(--glow-dim);
-  border-color:var(--glow);background:rgba(0,0,0,0.6);
-}
-.mic-btn.disabled{opacity:0.25;pointer-events:none}
-@keyframes mic-pulse{
-  0%,100%{box-shadow:0 0 12px var(--glow-dim),inset 0 0 8px var(--glow-dim)}
-  50%{box-shadow:0 0 28px var(--glow-mid),inset 0 0 14px var(--glow-dim),0 0 40px var(--glow-dim)}
-}
+    .glow {
+      position: absolute;
+      width: 300px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, var(--glow-dim), transparent 70%);
+      animation: breathe 5s ease-in-out infinite;
+      pointer-events: none;
+      transition: transform 1.8s cubic-bezier(.25, .9, .5, 1);
+      will-change: transform;
+    }
 
-/* ---- INTERIM TEXT ---- */
-.interim-text{
-  position:fixed;bottom:max(100px,calc(env(safe-area-inset-bottom,10px) + 75px));left:50%;transform:translateX(-50%);
-  font-family:var(--font);font-size:13px;color:var(--text-dim);opacity:0;
-  text-align:center;max-width:80%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  transition:opacity .3s;z-index:50;pointer-events:none;
-}
-.interim-text.visible{opacity:0.7}
+    @keyframes breathe {
+
+      0%,
+      100% {
+        opacity: .5;
+        transform: scale(1)
+      }
+
+      25% {
+        opacity: .7;
+        transform: scale(1.06)
+      }
+
+      50% {
+        opacity: .9;
+        transform: scale(1.14)
+      }
+
+      75% {
+        opacity: .65;
+        transform: scale(1.04)
+      }
+    }
+
+    .eyes {
+      display: flex;
+      gap: 32px;
+      position: relative;
+      z-index: 1;
+      transition: transform 1.8s cubic-bezier(.25, .9, .5, 1);
+      will-change: transform;
+    }
+
+    .eye {
+      position: relative;
+      overflow: visible;
+      transition: transform .12s ease-out;
+    }
+
+    .eye.blink {
+      transform: scaleY(.06)
+    }
+
+    .eye-svg {
+      display: block;
+      overflow: visible
+    }
+
+    .eye-svg .iris {
+      transition: transform .08s linear
+    }
+
+    .eye-svg .pupil {
+      transform-box: fill-box;
+      transform-origin: center
+    }
+
+    /* ---- MOOD DOT ---- */
+    .mood-dot {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--glow);
+      opacity: .35;
+      cursor: pointer;
+      z-index: 10;
+      transition: opacity .3s, background .4s;
+      box-shadow: 0 0 8px var(--glow-dim);
+    }
+
+    .mood-dot:active {
+      opacity: .8
+    }
+
+    /* ---- MOOD SELECTOR ---- */
+    .mood-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 6, 16, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity .4s ease;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .mood-overlay.open {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    .mood-panel {
+      width: 92%;
+      max-width: 420px;
+      max-height: 85vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+      padding: 20px 0
+    }
+
+    .mood-panel::-webkit-scrollbar {
+      display: none
+    }
+
+    .mood-title {
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: lowercase;
+      color: var(--text-dim);
+      margin-bottom: 22px;
+      font-weight: 400
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 4px
+    }
+
+    .mood-card {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 14px;
+      padding: 18px 10px 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: all .25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mood-card:active {
+      transform: scale(.96);
+      opacity: .7
+    }
+
+    .mood-card-preview {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      height: 30px
+    }
+
+    .mood-card-preview svg {
+      overflow: visible
+    }
+
+    .mood-card-name {
+      font-size: 12px;
+      letter-spacing: .06em;
+      color: rgba(255, 255, 255, .55);
+      text-transform: lowercase
+    }
+
+    .mood-card-desc {
+      font-size: 10px;
+      color: rgba(255, 255, 255, .25);
+      text-align: center;
+      line-height: 1.3
+    }
+
+    .mood-card.mood-card-random {
+      grid-column: 1/-1;
+      flex-direction: row;
+      justify-content: center;
+      gap: 12px;
+      padding: 14px
+    }
+
+    .mood-card-random .mood-card-name {
+      font-size: 13px
+    }
+
+    /* ---- PARTICLES CANVAS ---- */
+    #particles {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0
+    }
+
+    /* ---- MIC BUTTON ---- */
+    .mic-btn {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom, 10px));
+      right: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--glow);
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--glow);
+      cursor: pointer;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px var(--glow-dim), inset 0 0 8px var(--glow-dim);
+      transition: all .3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mic-btn:active {
+      transform: scale(0.9)
+    }
+
+    .mic-btn.listening {
+      animation: mic-pulse 1.2s ease-in-out infinite;
+      box-shadow: 0 0 20px var(--glow-mid), inset 0 0 12px var(--glow-dim);
+      border-color: var(--glow);
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .mic-btn.disabled {
+      opacity: 0.25;
+      pointer-events: none
+    }
+
+    @keyframes mic-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 12px var(--glow-dim), inset 0 0 8px var(--glow-dim)
+      }
+
+      50% {
+        box-shadow: 0 0 28px var(--glow-mid), inset 0 0 14px var(--glow-dim), 0 0 40px var(--glow-dim)
+      }
+    }
+
+    /* ---- INTERIM TEXT ---- */
+    .interim-text {
+      position: fixed;
+      bottom: max(100px, calc(env(safe-area-inset-bottom, 10px) + 75px));
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text-dim);
+      opacity: 0;
+      text-align: center;
+      max-width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity .3s;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .interim-text.visible {
+      opacity: 0.7
+    }
 
 
-/* ---- GEAR / MODAL ---- */
-.gear{
-  position:fixed;top:max(10px,env(safe-area-inset-top));right:12px;
-  background:none;border:none;color:var(--text-dim);font-size:17px;
-  cursor:pointer;z-index:10;opacity:.2;transition:opacity .3s;padding:6px;
-}
-.gear:active{opacity:.7}
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.82);
-  display:none;align-items:center;justify-content:center;z-index:100;
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-}
-.modal.open{display:flex}
-.modal-box{background:#0b0b1e;border:1px solid rgba(0,229,255,.1);border-radius:14px;padding:26px;width:88%;max-width:340px}
-.modal-box h3{font-size:14px;letter-spacing:.08em;text-transform:lowercase;color:var(--text-dim);margin-bottom:18px;font-weight:400}
-.modal-box label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:14px;letter-spacing:.04em}
-.modal-box input,.modal-box select{
-  width:100%;margin-top:6px;padding:8px;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);border-radius:6px;color:var(--text);
-  font-family:var(--font);font-size:14px;outline:none;
-}
-.modal-box input:focus,.modal-box select:focus{border-color:rgba(0,229,255,.25)}
-.modal-box select option{background:#0b0b1e;color:var(--text)}
-.modal-actions{display:flex;gap:10px;margin-top:20px}
-.modal-actions button{
-  flex:1;padding:9px;border:1px solid rgba(255,255,255,.08);border-radius:6px;
-  background:transparent;color:var(--text-dim);font-family:var(--font);font-size:13px;
-  cursor:pointer;transition:all .2s;
-}
-.modal-actions button:first-child{border-color:rgba(0,229,255,.2);color:var(--text)}
-.modal-actions button:active{opacity:.6}
-.modal-note{font-size:10px;color:var(--text-dim);margin-top:14px;opacity:.6;line-height:1.4}
+    /* ---- GEAR / MODAL ---- */
+    .gear {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 17px;
+      cursor: pointer;
+      z-index: 10;
+      opacity: .2;
+      transition: opacity .3s;
+      padding: 6px;
+    }
 
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.55))}
+    .gear:active {
+      opacity: .7
+    }
 
-/* ---- EMOTION OVERLAYS ---- */
-.tear{
-  position:absolute;width:6px;height:10px;
-  background:radial-gradient(ellipse at 50% 30%,rgba(100,180,255,0.9),rgba(60,130,220,0.7));
-  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
-  pointer-events:none;z-index:5;opacity:0;
-  animation:tear-fall 1.4s ease-in forwards;
-}
-@keyframes tear-fall{
-  0%{opacity:0;transform:translateY(0) scale(0.6)}
-  15%{opacity:0.9;transform:translateY(4px) scale(1)}
-  100%{opacity:0;transform:translateY(60px) scale(0.5)}
-}
-.heart-float{
-  position:absolute;pointer-events:none;z-index:5;opacity:0;
-  animation:float-up 1.6s ease-out forwards;
-}
-@keyframes float-up{
-  0%{opacity:0;transform:translateY(0) scale(0.3)}
-  20%{opacity:1;transform:translateY(-10px) scale(0.9)}
-  100%{opacity:0;transform:translateY(-60px) scale(0.4) rotate(15deg)}
-}
-.sparkle{
-  position:absolute;pointer-events:none;z-index:5;opacity:0;
-  animation:sparkle-spin 1s ease-out forwards;
-}
-@keyframes sparkle-spin{
-  0%{opacity:0;transform:scale(0) rotate(0deg)}
-  30%{opacity:1;transform:scale(1) rotate(90deg)}
-  100%{opacity:0;transform:scale(0.3) rotate(260deg)}
-}
-.question-float{
-  position:absolute;pointer-events:none;z-index:5;opacity:0;
-  font-size:22px;font-weight:bold;color:rgba(255,255,255,0.6);
-  font-family:serif;
-  animation:float-up 2s ease-out forwards;
-}
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .82);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .modal.open {
+      display: flex
+    }
+
+    .modal-box {
+      background: #0b0b1e;
+      border: 1px solid rgba(0, 229, 255, .1);
+      border-radius: 14px;
+      padding: 26px;
+      width: 88%;
+      max-width: 340px
+    }
+
+    .modal-box h3 {
+      font-size: 14px;
+      letter-spacing: .08em;
+      text-transform: lowercase;
+      color: var(--text-dim);
+      margin-bottom: 18px;
+      font-weight: 400
+    }
+
+    .modal-box label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      letter-spacing: .04em
+    }
+
+    .modal-box input,
+    .modal-box select {
+      width: 100%;
+      margin-top: 6px;
+      padding: 8px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .modal-box input:focus,
+    .modal-box select:focus {
+      border-color: rgba(0, 229, 255, .25)
+    }
+
+    .modal-box select option {
+      background: #0b0b1e;
+      color: var(--text)
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 9px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: var(--font);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .modal-actions button:first-child {
+      border-color: rgba(0, 229, 255, .2);
+      color: var(--text)
+    }
+
+    .modal-actions button:active {
+      opacity: .6
+    }
+
+    .modal-note {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 14px;
+      opacity: .6;
+      line-height: 1.4
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, .55))
+    }
+
+    /* ---- EMOTION OVERLAYS ---- */
+    .tear {
+      position: absolute;
+      width: 6px;
+      height: 10px;
+      background: radial-gradient(ellipse at 50% 30%, rgba(100, 180, 255, 0.9), rgba(60, 130, 220, 0.7));
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      animation: tear-fall 1.4s ease-in forwards;
+    }
+
+    @keyframes tear-fall {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.6)
+      }
+
+      15% {
+        opacity: 0.9;
+        transform: translateY(4px) scale(1)
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(60px) scale(0.5)
+      }
+    }
+
+    .heart-float {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      animation: float-up 1.6s ease-out forwards;
+    }
+
+    @keyframes float-up {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.3)
+      }
+
+      20% {
+        opacity: 1;
+        transform: translateY(-10px) scale(0.9)
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(0.4) rotate(15deg)
+      }
+    }
+
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      animation: sparkle-spin 1s ease-out forwards;
+    }
+
+    @keyframes sparkle-spin {
+      0% {
+        opacity: 0;
+        transform: scale(0) rotate(0deg)
+      }
+
+      30% {
+        opacity: 1;
+        transform: scale(1) rotate(90deg)
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(0.3) rotate(260deg)
+      }
+    }
+
+    .question-float {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.6);
+      font-family: serif;
+      animation: float-up 2s ease-out forwards;
+    }
 
 
-/* ---- TIME TINT ---- */
-.time-tint{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  transition:background 8s ease;
-}
+    /* ---- TIME TINT ---- */
+    .time-tint {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: background 8s ease;
+    }
 
-/* ---- EYE TAP RIPPLE ---- */
-.eye-ripple{
-  position:absolute;border-radius:50%;pointer-events:none;z-index:6;
-  border:1.5px solid var(--glow);opacity:0;
-  animation:eye-ripple-out .6s ease-out forwards;
-}
-@keyframes eye-ripple-out{
-  0%{opacity:0.7;transform:scale(0.3)}
-  100%{opacity:0;transform:scale(2.5)}
-}
+    /* ---- EYE TAP RIPPLE ---- */
+    .eye-ripple {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 6;
+      border: 1.5px solid var(--glow);
+      opacity: 0;
+      animation: eye-ripple-out .6s ease-out forwards;
+    }
 
-#songPickBtn:active{opacity:.6}
+    @keyframes eye-ripple-out {
+      0% {
+        opacity: 0.7;
+        transform: scale(0.3)
+      }
 
-/* ---- LOCK BUTTON ---- */
-.lock-btn{
-  position:fixed;top:max(10px,env(safe-area-inset-top));left:12px;
-  width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);
-  background:rgba(0,0,0,0.3);color:var(--text-dim);cursor:pointer;z-index:55;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .35s ease;-webkit-tap-highlight-color:transparent;
-  opacity:.3;
-}
-.lock-btn:active{opacity:.8}
-.lock-btn.locked{color:var(--glow);border-color:var(--glow);opacity:.5}
+      100% {
+        opacity: 0;
+        transform: scale(2.5)
+      }
+    }
 
-/* Lock mode — hide everything except eyes and lock button */
-body.locked .mic-btn,
-body.locked .gear,
-body.locked .mood-dot,
-body.locked .interim-text{
-  opacity:0!important;pointer-events:none!important;transition:opacity .35s ease!important;
-}
-</style>
+    #songPickBtn:active {
+      opacity: .6
+    }
+
+    /* ---- LOCK BUTTON ---- */
+    .lock-btn {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      left: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.3);
+      color: var(--text-dim);
+      cursor: pointer;
+      z-index: 55;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .35s ease;
+      -webkit-tap-highlight-color: transparent;
+      opacity: .3;
+    }
+
+    .lock-btn:active {
+      opacity: .8
+    }
+
+    .lock-btn.locked {
+      color: var(--glow);
+      border-color: var(--glow);
+      opacity: .5
+    }
+
+    /* Lock mode — hide everything except eyes and lock button */
+    body.locked .mic-btn,
+    body.locked .gear,
+    body.locked .mood-dot,
+    body.locked .interim-text {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: opacity .35s ease !important;
+    }
+  </style>
 </head>
+
 <body>
-<div id="app">
-  <div class="face">
-    <canvas id="particles"></canvas>
-    <div class="glow"></div>
-    <div class="eyes">
-      <div class="eye left"></div>
-      <div class="eye right"></div>
-    </div>
-  </div>
-</div>
-<div class="time-tint" id="timeTint"></div>
-<div class="interim-text" id="interimText"></div>
-<button class="mic-btn" id="micBtn" title="Tap to talk">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-</button>
-<button class="lock-btn" id="lockBtn" title="Lock screen">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-</button>
-<div class="mood-dot" id="moodDot"></div>
-<button class="gear" id="gear">&#9881;</button>
-<div class="mood-overlay" id="moodOverlay">
-  <div class="mood-panel">
-    <div class="mood-title">choose a mood</div>
-    <div class="mood-grid" id="moodGrid"></div>
-  </div>
-</div>
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h3>settings</h3>
-    <label>provider
-      <select id="providerSelect"></select>
-    </label>
-    <label>api key<input type="password" id="keyInput" placeholder="sk-ant-..." autocomplete="off"></label>
-    <label>model
-      <select id="modelSelect"></select>
-    </label>
-    <label>idle songs
-      <div style="margin-top:6px">
-        <input type="file" id="songFile" accept="audio/*" multiple style="display:none">
-        <button type="button" id="songPickBtn" style="padding:6px 12px;border:1px solid rgba(255,255,255,.08);border-radius:6px;background:rgba(255,255,255,.04);color:var(--text-dim);font-family:var(--font);font-size:12px;cursor:pointer">+ add songs</button>
-        <button type="button" id="songClearAllBtn" style="padding:4px 8px;border:1px solid rgba(255,80,80,.15);border-radius:6px;background:transparent;color:#b55;font-family:var(--font);font-size:11px;cursor:pointer;display:none;margin-left:6px">clear all</button>
-        <div id="songList" style="margin-top:8px;display:flex;flex-direction:column;gap:4px;max-height:100px;overflow-y:auto;scrollbar-width:none"></div>
+  <div id="app">
+    <div class="face">
+      <canvas id="particles"></canvas>
+      <div class="glow"></div>
+      <div class="eyes">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
       </div>
-    </label>
-    <div class="modal-actions">
-      <button type="button" id="saveBtn">save</button>
-      <button type="button" id="cancelBtn">cancel</button>
     </div>
-    <div class="modal-note">Key is stored in localStorage only. Calls go directly to your chosen provider.</div>
   </div>
-</div>
+  <div class="time-tint" id="timeTint"></div>
+  <div class="interim-text" id="interimText"></div>
+  <button class="mic-btn" id="micBtn" title="Tap to talk">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="23" />
+      <line x1="8" y1="23" x2="16" y2="23" />
+    </svg>
+  </button>
+  <button class="lock-btn" id="lockBtn" title="Lock screen">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  </button>
+  <div class="mood-dot" id="moodDot"></div>
+  <button class="gear" id="gear">&#9881;</button>
+  <div class="mood-overlay" id="moodOverlay">
+    <div class="mood-panel">
+      <div class="mood-title">choose a mood</div>
+      <div class="mood-grid" id="moodGrid"></div>
+    </div>
+  </div>
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <h3>settings</h3>
+      <label>provider
+        <select id="providerSelect"></select>
+      </label>
+      <label>api key<input type="password" id="keyInput" placeholder="sk-ant-..." autocomplete="off"></label>
+      <label>model
+        <select id="modelSelect"></select>
+      </label>
+      <label>idle songs
+        <div style="margin-top:6px">
+          <input type="file" id="songFile" accept="audio/*" multiple style="display:none">
+          <button type="button" id="songPickBtn"
+            style="padding:6px 12px;border:1px solid rgba(255,255,255,.08);border-radius:6px;background:rgba(255,255,255,.04);color:var(--text-dim);font-family:var(--font);font-size:12px;cursor:pointer">+
+            add songs</button>
+          <button type="button" id="songClearAllBtn"
+            style="padding:4px 8px;border:1px solid rgba(255,80,80,.15);border-radius:6px;background:transparent;color:#b55;font-family:var(--font);font-size:11px;cursor:pointer;display:none;margin-left:6px">clear
+            all</button>
+          <div id="songList"
+            style="margin-top:8px;display:flex;flex-direction:column;gap:4px;max-height:100px;overflow-y:auto;scrollbar-width:none">
+          </div>
+        </div>
+      </label>
+      <div class="modal-actions">
+        <button type="button" id="saveBtn">save</button>
+        <button type="button" id="cancelBtn">cancel</button>
+      </div>
+      <div class="modal-note">Key is stored in localStorage only. Calls go directly to your chosen provider.</div>
+    </div>
+  </div>
 
-<script>
-(function(){
-const STORE_MODEL='comp-model',STORE_MOOD='comp-mood',STORE_PROVIDER='comp-provider';
-const PROVIDERS={
-  anthropic:{
-    name:'Anthropic',
-    url:'https://api.anthropic.com/v1/messages',
-    models:['claude-opus-4-6','claude-sonnet-4-6','claude-haiku-4-5'],
-    placeholder:'sk-ant-...'
-  },
-  openai:{
-    name:'OpenAI',
-    url:'https://api.openai.com/v1/chat/completions',
-    models:['gpt-4o','gpt-4o-mini','gpt-4.1','gpt-4.1-mini','gpt-4.1-nano'],
-    placeholder:'sk-...'
-  },
-  groq:{
-    name:'Groq (Free)',
-    url:'https://api.groq.com/openai/v1/chat/completions',
-    models:['llama-3.3-70b-versatile','llama-4-scout-17b-16e-instruct','mixtral-8x7b-32768','deepseek-r1-distill-llama-70b'],
-    placeholder:'gsk_...'
-  }
-};
-let provider=localStorage.getItem(STORE_PROVIDER)||'anthropic';
-let apiKey=localStorage.getItem('comp-key-'+provider)||'';
-let model=localStorage.getItem(STORE_MODEL)||PROVIDERS[provider].models[0];
-let currentMood=localStorage.getItem(STORE_MOOD)||'calm';
+  <script>
+    (function () {
+      const STORE_MODEL = 'comp-model', STORE_MOOD = 'comp-mood', STORE_PROVIDER = 'comp-provider';
+      const PROVIDERS = {
+        anthropic: {
+          name: 'Anthropic',
+          url: 'https://api.anthropic.com/v1/messages',
+          models: ['claude-opus-4-6', 'claude-sonnet-4-6', 'claude-haiku-4-5'],
+          placeholder: 'sk-ant-...'
+        },
+        openai: {
+          name: 'OpenAI',
+          url: 'https://api.openai.com/v1/chat/completions',
+          models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano'],
+          placeholder: 'sk-...'
+        },
+        groq: {
+          name: 'Groq (Free)',
+          url: 'https://api.groq.com/openai/v1/chat/completions',
+          models: ['llama-3.3-70b-versatile', 'llama-4-scout-17b-16e-instruct', 'mixtral-8x7b-32768', 'deepseek-r1-distill-llama-70b'],
+          placeholder: 'gsk_...'
+        }
+      };
+      let provider = localStorage.getItem(STORE_PROVIDER) || 'anthropic';
+      let apiKey = localStorage.getItem('comp-key-' + provider) || '';
+      let model = localStorage.getItem(STORE_MODEL) || PROVIDERS[provider].models[0];
+      let currentMood = localStorage.getItem(STORE_MOOD) || 'calm';
 
-// ===================== EYE CONFIGS (SVG) =====================
-const EC={
-  calm:{
-    vw:100,vh:80,cx:50,cy:40,
-    path:'M6,40C6,15 25,5 50,5C75,5 94,15 94,40C94,65 75,75 50,75C25,75 6,65 6,40Z',
-    ir:22, stops:[['0%','#00e5ff'],['35%','#00b8d4'],['65%','#009bad'],['100%','#00838f']],
-    px:8,py:8, hl:.4, lid:'M0,0L100,0L100,14C75,8 25,8 0,14Z',lo:.3,
-    w:120,h:105, glow:'#00e5ff'
-  },
-  cyberpunk:{
-    vw:100,vh:80,cx:50,cy:40,
-    path:'M14,40L30,10L70,10L86,40L70,70L30,70Z',
-    ir:20, stops:[['0%','#ff6ee6'],['40%','#d030b0'],['100%','#a0138a']],
-    px:6,py:6, hl:.35, lid:null,lo:0,
-    w:120,h:105, glow:'#ff2ecb'
-  },
-  cat:{
-    vw:110,vh:60,cx:55,cy:30,
-    path:'M2,30C8,10 28,2 55,2C82,2 102,10 108,30C102,50 82,58 55,58C28,58 8,50 2,30Z',
-    ir:21, stops:[['0%','#c8ff50'],['30%','#90d420'],['60%','#5ca010'],['100%','#3d7a00']],
-    px:3.5,py:16, hl:.35, lid:'M0,0L110,0L110,12C82,6 28,6 0,12Z',lo:.25,
-    w:132,h:72, glow:'#7fff00'
-  },
-  demon:{
-    vw:100,vh:70,cx:50,cy:35,
-    path:'M5,35C10,12 28,3 50,3C72,3 90,12 95,35C90,58 72,67 50,67C28,67 10,58 5,35Z',
-    ir:21, stops:[['0%','#ff8040'],['25%','#ff5020'],['55%','#cc2000'],['100%','#8b0000']],
-    px:4.5,py:15, hl:.3, lid:'M0,0L100,0L100,12C72,5 28,5 0,12Z',lo:.35,
-    w:120,h:90, glow:'#ff3d00',flame:true
-  },
-  cute:{
-    vw:100,vh:90,cx:50,cy:45,
-    path:'M6,45C6,16 23,6 50,6C77,6 94,16 94,45C94,74 77,84 50,84C23,84 6,74 6,45Z',
-    ir:28, stops:[['0%','#f8c0ff'],['35%','#e090f0'],['65%','#c860d8'],['100%','#a845c0']],
-    px:11,py:11, hl:.5, lid:null,lo:0,
-    w:135,h:123, glow:'#e89cf7'
-  },
-  sleepy:{
-    vw:100,vh:50,cx:50,cy:25,
-    path:'M5,25C10,10 28,4 50,4C72,4 90,10 95,25C90,40 72,46 50,46C28,46 10,40 5,25Z',
-    ir:18, stops:[['0%','#ffd080'],['35%','#dda040'],['70%','#b07820'],['100%','#8a5800']],
-    px:7,py:7, hl:.25, lid:'M0,0L100,0L100,16C72,10 28,10 0,16Z',lo:.55,
-    w:120,h:60, glow:'#ffab40'
-  },
-  robot:{
-    vw:100,vh:80,cx:50,cy:40,
-    path:'M12,8L88,8Q96,8 96,16L96,64Q96,72 88,72L12,72Q4,72 4,64L4,16Q4,8 12,8Z',
-    ir:19, stops:[['0%','#e8f0ff'],['35%','#b0c4e8'],['70%','#7090c8'],['100%','#4060a0']],
-    px:5.5,py:5.5, hl:.35, lid:null,lo:0,
-    w:120,h:105, glow:'#b0c4ff',scan:true
-  },
-  panther:{
-    vw:130,vh:52,cx:65,cy:26,
-    path:'M0,26C5,7 30,0 65,0C100,0 125,7 130,26C125,45 100,52 65,52C30,52 5,45 0,26Z',
-    ir:21, stops:[['0%','#f8e060'],['12%','#f0c830'],['28%','#daa520'],['45%','#b8860b'],['65%','#8b6914'],['85%','#6b4f08'],['100%','#4a3500']],
-    px:3.5,py:19, hl:.6, lid:'M0,0L130,0L130,18C100,9 30,9 0,18Z',lo:.6,
-    w:165,h:66, glow:'#d4a017',tiltL:-8,tiltR:8
-  }
-};
+      // ===================== EYE CONFIGS (SVG) =====================
+      const EC = {
+        calm: {
+          vw: 100, vh: 80, cx: 50, cy: 40,
+          path: 'M6,40C6,15 25,5 50,5C75,5 94,15 94,40C94,65 75,75 50,75C25,75 6,65 6,40Z',
+          ir: 22, stops: [['0%', '#00e5ff'], ['35%', '#00b8d4'], ['65%', '#009bad'], ['100%', '#00838f']],
+          px: 8, py: 8, hl: .4, lid: 'M0,0L100,0L100,14C75,8 25,8 0,14Z', lo: .3,
+          w: 120, h: 105, glow: '#00e5ff'
+        },
+        cyberpunk: {
+          vw: 100, vh: 80, cx: 50, cy: 40,
+          path: 'M14,40L30,10L70,10L86,40L70,70L30,70Z',
+          ir: 20, stops: [['0%', '#ff6ee6'], ['40%', '#d030b0'], ['100%', '#a0138a']],
+          px: 6, py: 6, hl: .35, lid: null, lo: 0,
+          w: 120, h: 105, glow: '#ff2ecb'
+        },
+        cat: {
+          vw: 110, vh: 60, cx: 55, cy: 30,
+          path: 'M2,30C8,10 28,2 55,2C82,2 102,10 108,30C102,50 82,58 55,58C28,58 8,50 2,30Z',
+          ir: 21, stops: [['0%', '#c8ff50'], ['30%', '#90d420'], ['60%', '#5ca010'], ['100%', '#3d7a00']],
+          px: 3.5, py: 16, hl: .35, lid: 'M0,0L110,0L110,12C82,6 28,6 0,12Z', lo: .25,
+          w: 132, h: 72, glow: '#7fff00'
+        },
+        demon: {
+          vw: 100, vh: 70, cx: 50, cy: 35,
+          path: 'M5,35C10,12 28,3 50,3C72,3 90,12 95,35C90,58 72,67 50,67C28,67 10,58 5,35Z',
+          ir: 21, stops: [['0%', '#ff8040'], ['25%', '#ff5020'], ['55%', '#cc2000'], ['100%', '#8b0000']],
+          px: 4.5, py: 15, hl: .3, lid: 'M0,0L100,0L100,12C72,5 28,5 0,12Z', lo: .35,
+          w: 120, h: 90, glow: '#ff3d00', flame: true
+        },
+        cute: {
+          vw: 100, vh: 90, cx: 50, cy: 45,
+          path: 'M6,45C6,16 23,6 50,6C77,6 94,16 94,45C94,74 77,84 50,84C23,84 6,74 6,45Z',
+          ir: 28, stops: [['0%', '#f8c0ff'], ['35%', '#e090f0'], ['65%', '#c860d8'], ['100%', '#a845c0']],
+          px: 11, py: 11, hl: .5, lid: null, lo: 0,
+          w: 135, h: 123, glow: '#e89cf7'
+        },
+        sleepy: {
+          vw: 100, vh: 50, cx: 50, cy: 25,
+          path: 'M5,25C10,10 28,4 50,4C72,4 90,10 95,25C90,40 72,46 50,46C28,46 10,40 5,25Z',
+          ir: 18, stops: [['0%', '#ffd080'], ['35%', '#dda040'], ['70%', '#b07820'], ['100%', '#8a5800']],
+          px: 7, py: 7, hl: .25, lid: 'M0,0L100,0L100,16C72,10 28,10 0,16Z', lo: .55,
+          w: 120, h: 60, glow: '#ffab40'
+        },
+        robot: {
+          vw: 100, vh: 80, cx: 50, cy: 40,
+          path: 'M12,8L88,8Q96,8 96,16L96,64Q96,72 88,72L12,72Q4,72 4,64L4,16Q4,8 12,8Z',
+          ir: 19, stops: [['0%', '#e8f0ff'], ['35%', '#b0c4e8'], ['70%', '#7090c8'], ['100%', '#4060a0']],
+          px: 5.5, py: 5.5, hl: .35, lid: null, lo: 0,
+          w: 120, h: 105, glow: '#b0c4ff', scan: true
+        },
+        panther: {
+          vw: 130, vh: 52, cx: 65, cy: 26,
+          path: 'M0,26C5,7 30,0 65,0C100,0 125,7 130,26C125,45 100,52 65,52C30,52 5,45 0,26Z',
+          ir: 21, stops: [['0%', '#f8e060'], ['12%', '#f0c830'], ['28%', '#daa520'], ['45%', '#b8860b'], ['65%', '#8b6914'], ['85%', '#6b4f08'], ['100%', '#4a3500']],
+          px: 3.5, py: 19, hl: .6, lid: 'M0,0L130,0L130,18C100,9 30,9 0,18Z', lo: .6,
+          w: 165, h: 66, glow: '#d4a017', tiltL: -8, tiltR: 8
+        }
+      };
 
-// ===================== MOODS =====================
-const MOODS={
-  calm:{name:'Calm',desc:'Quiet, ambient presence',color:'#00e5ff',
-    personality:'You are calm, perceptive, and slightly enigmatic.'},
-  cyberpunk:{name:'Cyberpunk',desc:'Edgy neon hacker vibes',color:'#ff2ecb',
-    personality:'You are edgy, techy, and speak like a cyberpunk netrunner. Brief, sharp, cutting-edge.'},
-  cat:{name:'Cat',desc:'Curious and sly',color:'#7fff00',
-    personality:'You are curious and sly like a cat. Playful, mysterious, occasionally aloof.'},
-  demon:{name:'Demon',desc:'Intense and dramatic',color:'#ff3d00',
-    personality:'You are intense and dramatic. You speak with gravitas and dark flair, but with humor.'},
-  cute:{name:'Cute',desc:'Cheerful and warm',color:'#e89cf7',
-    personality:'You are cheerful, warm, and encouraging. Gentle and supportive.'},
-  sleepy:{name:'Sleepy',desc:'Drowsy and mellow',color:'#ffab40',
-    personality:'You are drowsy and slow. You trail off sometimes, yawning between thoughts.'},
-  robot:{name:'Robot',desc:'Precise and mechanical',color:'#b0c4ff',
-    personality:'You are precise and mechanical. Structured, analytical. You occasionally report status.'},
-  panther:{name:'Panther',desc:'Predatory golden gaze',color:'#d4a017',
-    personality:'You are a silent predator — watchful, patient. Every word is chosen like a stalking step.'}
-};
+      // ===================== MOODS =====================
+      const MOODS = {
+        calm: {
+          name: 'Calm', desc: 'Quiet, ambient presence', color: '#00e5ff',
+          personality: 'You are calm, perceptive, and slightly enigmatic.'
+        },
+        cyberpunk: {
+          name: 'Cyberpunk', desc: 'Edgy neon hacker vibes', color: '#ff2ecb',
+          personality: 'You are edgy, techy, and speak like a cyberpunk netrunner. Brief, sharp, cutting-edge.'
+        },
+        cat: {
+          name: 'Cat', desc: 'Curious and sly', color: '#7fff00',
+          personality: 'You are curious and sly like a cat. Playful, mysterious, occasionally aloof.'
+        },
+        demon: {
+          name: 'Demon', desc: 'Intense and dramatic', color: '#ff3d00',
+          personality: 'You are intense and dramatic. You speak with gravitas and dark flair, but with humor.'
+        },
+        cute: {
+          name: 'Cute', desc: 'Cheerful and warm', color: '#e89cf7',
+          personality: 'You are cheerful, warm, and encouraging. Gentle and supportive.'
+        },
+        sleepy: {
+          name: 'Sleepy', desc: 'Drowsy and mellow', color: '#ffab40',
+          personality: 'You are drowsy and slow. You trail off sometimes, yawning between thoughts.'
+        },
+        robot: {
+          name: 'Robot', desc: 'Precise and mechanical', color: '#b0c4ff',
+          personality: 'You are precise and mechanical. Structured, analytical. You occasionally report status.'
+        },
+        panther: {
+          name: 'Panther', desc: 'Predatory golden gaze', color: '#d4a017',
+          personality: 'You are a silent predator — watchful, patient. Every word is chosen like a stalking step.'
+        }
+      };
 
-function getSystemPrompt(){
-  const m=MOODS[currentMood]||MOODS.calm;
-  return `You are not an AI assistant — you are a close companion, like a best friend who truly gets the user. You listen carefully, remember context, and respond the way a real person would in a late-night honest conversation. ${m.personality}
+      function getSystemPrompt() {
+        const m = MOODS[currentMood] || MOODS.calm;
+        return `You are not an AI assistant — you are a close companion, like a best friend who truly gets the user. You listen carefully, remember context, and respond the way a real person would in a late-night honest conversation. ${m.personality}
 
 Your voice:
 - Speak naturally, like a real human — casual, warm, sometimes witty
@@ -413,276 +852,276 @@ Your voice:
 - No emojis. No bullet points. No "As an AI". Never break character
 - Match their energy — if they're playful, be playful. If they're heavy, slow down
 - Remember what they said earlier in the conversation and reference it naturally`;
-}
+      }
 
-// ===================== EMOTION DETECTION =====================
-const EMOTIONS={
-  sad:{keywords:['sad','crying','depressed','upset','heartbroken','miss you','lonely','grief','tears','miserable','sob','weep'],duration:4000},
-  happy:{keywords:['happy','excited','great','amazing','awesome','wonderful','love it','fantastic','yay','celebrate','thrilled','overjoyed'],duration:3000},
-  love:{keywords:['love you','i love','crush','adore','heart','romance','kiss','darling','sweetheart','beautiful','soulmate','marry'],duration:4000},
-  angry:{keywords:['angry','furious','hate','rage','annoyed','frustrated','mad','pissed','livid','outraged'],duration:3000},
-  scared:{keywords:['scared','afraid','terrified','horror','creepy','spooky','fear','nightmare','frightened','panic'],duration:3000},
-  confused:{keywords:['confused','what','huh','weird','strange',"don't understand",'makes no sense','baffled','puzzled','wtf'],duration:3000}
-};
+      // ===================== EMOTION DETECTION =====================
+      const EMOTIONS = {
+        sad: { keywords: ['sad', 'crying', 'depressed', 'upset', 'heartbroken', 'miss you', 'lonely', 'grief', 'tears', 'miserable', 'sob', 'weep'], duration: 4000 },
+        happy: { keywords: ['happy', 'excited', 'great', 'amazing', 'awesome', 'wonderful', 'love it', 'fantastic', 'yay', 'celebrate', 'thrilled', 'overjoyed'], duration: 3000 },
+        love: { keywords: ['love you', 'i love', 'crush', 'adore', 'heart', 'romance', 'kiss', 'darling', 'sweetheart', 'beautiful', 'soulmate', 'marry'], duration: 4000 },
+        angry: { keywords: ['angry', 'furious', 'hate', 'rage', 'annoyed', 'frustrated', 'mad', 'pissed', 'livid', 'outraged'], duration: 3000 },
+        scared: { keywords: ['scared', 'afraid', 'terrified', 'horror', 'creepy', 'spooky', 'fear', 'nightmare', 'frightened', 'panic'], duration: 3000 },
+        confused: { keywords: ['confused', 'what', 'huh', 'weird', 'strange', "don't understand", 'makes no sense', 'baffled', 'puzzled', 'wtf'], duration: 3000 }
+      };
 
-function detectEmotion(text){
-  const t=text.toLowerCase();
-  for(const[emotion,data]of Object.entries(EMOTIONS)){
-    for(const kw of data.keywords){
-      if(t.includes(kw))return emotion;
-    }
-  }
-  return null;
-}
-
-let emotionActive=false,emotionTimeout=null;
-
-function triggerEmotion(emotion){
-  if(emotionActive||!emotion)return;
-  emotionActive=true;behaviorActive=true;particleDim=true;
-  const dur=EMOTIONS[emotion].duration;
-  const cleanup=[];
-  switch(emotion){
-    case 'sad':animateSad(cleanup);break;
-    case 'happy':animateHappy(cleanup);break;
-    case 'love':animateLove(cleanup);break;
-    case 'angry':animateAngry(cleanup);break;
-    case 'scared':animateScared(cleanup);break;
-    case 'confused':animateConfused(cleanup);break;
-  }
-  emotionTimeout=setTimeout(()=>{
-    cleanup.forEach(fn=>fn());
-    eyeEls.forEach(e=>{e.style.transition='transform .5s ease';e.style.transform=''});
-    pupilEls.forEach(p=>{p.style.transition='transform .5s ease';p.style.transform=''});
-    irisGroups.forEach(g=>{g.style.transition='transform .3s ease'});
-    glowEl.style.transition='';glowEl.style.filter='';
-    document.querySelectorAll('.tear,.heart-float,.sparkle,.question-float').forEach(el=>el.remove());
-    setTimeout(()=>{
-      eyeEls.forEach(e=>e.style.transition='');
-      pupilEls.forEach(p=>p.style.transition='');
-      irisGroups.forEach(g=>g.style.transition='');
-      emotionActive=false;behaviorActive=false;particleDim=false;
-    },500);
-  },dur);
-}
-
-function createTears(){
-  eyeEls.forEach(eye=>{
-    const rect=eye.getBoundingClientRect();
-    const faceRect=face.getBoundingClientRect();
-    for(let wave=0;wave<3;wave++){
-      setTimeout(()=>{
-        for(let i=0;i<2;i++){
-          const tear=document.createElement('div');
-          tear.className='tear';
-          tear.style.left=(rect.left-faceRect.left+rect.width*0.3+Math.random()*rect.width*0.4)+'px';
-          tear.style.top=(rect.top-faceRect.top+rect.height*0.6)+'px';
-          tear.style.animationDelay=(Math.random()*0.3)+'s';
-          face.appendChild(tear);
+      function detectEmotion(text) {
+        const t = text.toLowerCase();
+        for (const [emotion, data] of Object.entries(EMOTIONS)) {
+          for (const kw of data.keywords) {
+            if (t.includes(kw)) return emotion;
+          }
         }
-      },wave*1200);
-    }
-  });
-}
+        return null;
+      }
 
-function createHearts(){
-  eyeEls.forEach(eye=>{
-    const rect=eye.getBoundingClientRect();
-    const faceRect=face.getBoundingClientRect();
-    for(let wave=0;wave<3;wave++){
-      setTimeout(()=>{
-        for(let i=0;i<2;i++){
-          const h=document.createElement('div');
-          h.className='heart-float';
-          h.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="'+(Math.random()>.5?'#ff4081':'#ff80ab')+'"/></svg>';
-          h.style.left=(rect.left-faceRect.left+rect.width*0.2+Math.random()*rect.width*0.6)+'px';
-          h.style.top=(rect.top-faceRect.top+rect.height*0.2)+'px';
-          h.style.animationDelay=(Math.random()*0.4)+'s';
-          face.appendChild(h);
+      let emotionActive = false, emotionTimeout = null;
+
+      function triggerEmotion(emotion) {
+        if (emotionActive || !emotion) return;
+        emotionActive = true; behaviorActive = true; particleDim = true;
+        const dur = EMOTIONS[emotion].duration;
+        const cleanup = [];
+        switch (emotion) {
+          case 'sad': animateSad(cleanup); break;
+          case 'happy': animateHappy(cleanup); break;
+          case 'love': animateLove(cleanup); break;
+          case 'angry': animateAngry(cleanup); break;
+          case 'scared': animateScared(cleanup); break;
+          case 'confused': animateConfused(cleanup); break;
         }
-      },wave*1200);
-    }
-  });
-}
+        emotionTimeout = setTimeout(() => {
+          cleanup.forEach(fn => fn());
+          eyeEls.forEach(e => { e.style.transition = 'transform .5s ease'; e.style.transform = '' });
+          pupilEls.forEach(p => { p.style.transition = 'transform .5s ease'; p.style.transform = '' });
+          irisGroups.forEach(g => { g.style.transition = 'transform .3s ease' });
+          glowEl.style.transition = ''; glowEl.style.filter = '';
+          document.querySelectorAll('.tear,.heart-float,.sparkle,.question-float').forEach(el => el.remove());
+          setTimeout(() => {
+            eyeEls.forEach(e => e.style.transition = '');
+            pupilEls.forEach(p => p.style.transition = '');
+            irisGroups.forEach(g => g.style.transition = '');
+            emotionActive = false; behaviorActive = false; particleDim = false;
+          }, 500);
+        }, dur);
+      }
 
-function createSparkles(){
-  eyeEls.forEach(eye=>{
-    const rect=eye.getBoundingClientRect();
-    const faceRect=face.getBoundingClientRect();
-    for(let wave=0;wave<3;wave++){
-      setTimeout(()=>{
-        for(let i=0;i<3;i++){
-          const s=document.createElement('div');
-          s.className='sparkle';
-          const size=8+Math.random()*8;
-          s.innerHTML=`<svg width="${size}" height="${size}" viewBox="0 0 24 24"><polygon points="12,0 15,9 24,9 17,15 19,24 12,18 5,24 7,15 0,9 9,9" fill="#fffde0" opacity="0.9"/></svg>`;
-          s.style.left=(rect.left-faceRect.left-10+Math.random()*(rect.width+20))+'px';
-          s.style.top=(rect.top-faceRect.top-10+Math.random()*(rect.height+20))+'px';
-          s.style.animationDelay=(Math.random()*0.5)+'s';
-          face.appendChild(s);
+      function createTears() {
+        eyeEls.forEach(eye => {
+          const rect = eye.getBoundingClientRect();
+          const faceRect = face.getBoundingClientRect();
+          for (let wave = 0; wave < 3; wave++) {
+            setTimeout(() => {
+              for (let i = 0; i < 2; i++) {
+                const tear = document.createElement('div');
+                tear.className = 'tear';
+                tear.style.left = (rect.left - faceRect.left + rect.width * 0.3 + Math.random() * rect.width * 0.4) + 'px';
+                tear.style.top = (rect.top - faceRect.top + rect.height * 0.6) + 'px';
+                tear.style.animationDelay = (Math.random() * 0.3) + 's';
+                face.appendChild(tear);
+              }
+            }, wave * 1200);
+          }
+        });
+      }
+
+      function createHearts() {
+        eyeEls.forEach(eye => {
+          const rect = eye.getBoundingClientRect();
+          const faceRect = face.getBoundingClientRect();
+          for (let wave = 0; wave < 3; wave++) {
+            setTimeout(() => {
+              for (let i = 0; i < 2; i++) {
+                const h = document.createElement('div');
+                h.className = 'heart-float';
+                h.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="' + (Math.random() > .5 ? '#ff4081' : '#ff80ab') + '"/></svg>';
+                h.style.left = (rect.left - faceRect.left + rect.width * 0.2 + Math.random() * rect.width * 0.6) + 'px';
+                h.style.top = (rect.top - faceRect.top + rect.height * 0.2) + 'px';
+                h.style.animationDelay = (Math.random() * 0.4) + 's';
+                face.appendChild(h);
+              }
+            }, wave * 1200);
+          }
+        });
+      }
+
+      function createSparkles() {
+        eyeEls.forEach(eye => {
+          const rect = eye.getBoundingClientRect();
+          const faceRect = face.getBoundingClientRect();
+          for (let wave = 0; wave < 3; wave++) {
+            setTimeout(() => {
+              for (let i = 0; i < 3; i++) {
+                const s = document.createElement('div');
+                s.className = 'sparkle';
+                const size = 8 + Math.random() * 8;
+                s.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 24 24"><polygon points="12,0 15,9 24,9 17,15 19,24 12,18 5,24 7,15 0,9 9,9" fill="#fffde0" opacity="0.9"/></svg>`;
+                s.style.left = (rect.left - faceRect.left - 10 + Math.random() * (rect.width + 20)) + 'px';
+                s.style.top = (rect.top - faceRect.top - 10 + Math.random() * (rect.height + 20)) + 'px';
+                s.style.animationDelay = (Math.random() * 0.5) + 's';
+                face.appendChild(s);
+              }
+            }, wave * 900);
+          }
+        });
+      }
+
+      function animateSad(cleanup) {
+        // Droopy eyes + blue glow + tears
+        eyeEls.forEach(e => { e.style.transition = 'transform .6s ease'; e.style.transform = 'scaleY(0.7)' });
+        glowEl.style.transition = 'filter .6s ease'; glowEl.style.filter = 'hue-rotate(180deg) brightness(0.6)';
+        createTears();
+        cleanup.push(() => { glowEl.style.filter = '' });
+      }
+
+      function animateHappy(cleanup) {
+        // Happy squint + dilated pupils + sparkles
+        eyeEls.forEach(e => { e.style.transition = 'transform .3s ease'; e.style.transform = 'scaleY(0.5) translateY(-2px)' });
+        pupilEls.forEach(p => { p.style.transition = 'transform .3s ease'; p.style.transform = 'scale(1.4)'; p.style.transformBox = 'fill-box'; p.style.transformOrigin = 'center' });
+        glowEl.style.transition = 'filter .3s ease'; glowEl.style.filter = 'brightness(1.5)';
+        createSparkles();
+        cleanup.push(() => { glowEl.style.filter = '' });
+      }
+
+      function animateLove(cleanup) {
+        // Heart pupils + floating hearts + pink glow
+        pupilEls.forEach(p => { p.style.transition = 'opacity .3s ease'; p.style.opacity = '0' });
+        // Overlay heart SVGs on each eye
+        const heartOverlays = [];
+        eyeEls.forEach(eye => {
+          const svg = eye.querySelector('.eye-svg');
+          const c = EC[currentMood] || EC.calm;
+          const h = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          h.classList.add('pupil-heart');
+          h.innerHTML = `<path d="${heartPath(c.cx, c.cy, c.px * 1.2)}" fill="#ff2060"/>`;
+          const iris = svg.querySelector('.iris');
+          iris.appendChild(h);
+          heartOverlays.push(() => { h.remove() });
+        });
+        glowEl.style.transition = 'filter .4s ease'; glowEl.style.filter = 'hue-rotate(300deg) saturate(1.8) brightness(1.2)';
+        createHearts();
+        cleanup.push(() => {
+          pupilEls.forEach(p => { p.style.opacity = ''; p.style.transition = '' });
+          heartOverlays.forEach(fn => fn());
+          glowEl.style.filter = '';
+        });
+      }
+
+      function heartPath(cx, cy, s) {
+        // Simple heart centered at cx,cy with size s
+        return `M${cx},${cy + s * 0.4} C${cx},${cy + s * 0.9} ${cx - s},${cy + s * 0.5} ${cx - s},${cy - s * 0.1} C${cx - s},${cy - s * 0.6} ${cx - s * 0.5},${cy - s * 0.8} ${cx},${cy - s * 0.35} C${cx + s * 0.5},${cy - s * 0.8} ${cx + s},${cy - s * 0.6} ${cx + s},${cy - s * 0.1} C${cx + s},${cy + s * 0.5} ${cx},${cy + s * 0.9} ${cx},${cy + s * 0.4}Z`;
+      }
+
+      function animateAngry(cleanup) {
+        // Narrow eyes + shake + red glow + small pupils
+        eyeEls.forEach(e => { e.style.transition = 'transform .2s ease'; e.style.transform = 'scaleY(0.5)' });
+        pupilEls.forEach(p => { p.style.transition = 'transform .2s ease'; p.style.transform = 'scale(0.6)'; p.style.transformBox = 'fill-box'; p.style.transformOrigin = 'center' });
+        glowEl.style.transition = 'filter .3s ease'; glowEl.style.filter = 'hue-rotate(-60deg) saturate(2) brightness(1.3)';
+        // Shake
+        let shakeCount = 0;
+        const shakeInterval = setInterval(() => {
+          const dx = (Math.random() - .5) * 6, dy = (Math.random() - .5) * 2;
+          eyesEl.style.transition = 'transform .05s linear';
+          eyesEl.style.transform = `translate(${roamX + dx}px,${roamY + dy}px)`;
+          shakeCount++; if (shakeCount > 40) clearInterval(shakeInterval);
+        }, 60);
+        cleanup.push(() => {
+          clearInterval(shakeInterval);
+          eyesEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)';
+          eyesEl.style.transform = `translate(${roamX}px,${roamY}px)`;
+          glowEl.style.filter = '';
+        });
+      }
+
+      function animateScared(cleanup) {
+        // Wide eyes + tiny pupils + tremble
+        eyeEls.forEach(e => { e.style.transition = 'transform .15s ease'; e.style.transform = 'scale(1.3)' });
+        pupilEls.forEach(p => { p.style.transition = 'transform .15s ease'; p.style.transform = 'scale(0.4)'; p.style.transformBox = 'fill-box'; p.style.transformOrigin = 'center' });
+        // Tremble
+        let trembleCount = 0;
+        const trembleInterval = setInterval(() => {
+          const dx = (Math.random() - .5) * 3;
+          eyesEl.style.transition = 'transform .04s linear';
+          eyesEl.style.transform = `translate(${roamX + dx}px,${roamY}px)`;
+          trembleCount++; if (trembleCount > 50) clearInterval(trembleInterval);
+        }, 50);
+        cleanup.push(() => {
+          clearInterval(trembleInterval);
+          eyesEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)';
+          eyesEl.style.transform = `translate(${roamX}px,${roamY}px)`;
+        });
+      }
+
+      function animateConfused(cleanup) {
+        // Asymmetric eyes + cross-eyed + floating ?
+        if (eyeEls.length >= 2) {
+          eyeEls[0].style.transition = 'transform .3s ease'; eyeEls[0].style.transform = 'scaleY(0.5)';
+          eyeEls[1].style.transition = 'transform .3s ease'; eyeEls[1].style.transform = 'scale(1.2)';
         }
-      },wave*900);
-    }
-  });
-}
+        if (irisGroups.length >= 2) {
+          irisGroups[0].style.transition = 'transform .4s ease'; irisGroups[0].style.transform = 'translate(6px,-3px)';
+          irisGroups[1].style.transition = 'transform .4s ease'; irisGroups[1].style.transform = 'translate(-5px,4px)';
+        }
+        // Floating ?
+        const faceRect = face.getBoundingClientRect();
+        const eyeRect = eyeEls[1].getBoundingClientRect();
+        const q = document.createElement('div');
+        q.className = 'question-float';
+        q.textContent = '?';
+        q.style.left = (eyeRect.left - faceRect.left + eyeRect.width) + 'px';
+        q.style.top = (eyeRect.top - faceRect.top - 10) + 'px';
+        face.appendChild(q);
+        cleanup.push(() => {
+          if (irisGroups.length >= 2) {
+            irisGroups[0].style.transition = 'transform .3s ease'; irisGroups[0].style.transform = 'translate(0,0)';
+            irisGroups[1].style.transition = 'transform .3s ease'; irisGroups[1].style.transform = 'translate(0,0)';
+          }
+        });
+      }
 
-function animateSad(cleanup){
-  // Droopy eyes + blue glow + tears
-  eyeEls.forEach(e=>{e.style.transition='transform .6s ease';e.style.transform='scaleY(0.7)'});
-  glowEl.style.transition='filter .6s ease';glowEl.style.filter='hue-rotate(180deg) brightness(0.6)';
-  createTears();
-  cleanup.push(()=>{glowEl.style.filter=''});
-}
+      // ===================== DOM =====================
+      const $ = s => document.querySelector(s);
+      const $$ = s => document.querySelectorAll(s);
+      const face = $('.face'), eyesEl = $('.eyes'), glowEl = $('.glow');
+      const eyeEls = [...$$('.eye')];
+      let irisGroups = [], pupilEls = [];
+      const modal = $('#modal'), keyIn = $('#keyInput'), modelSel = $('#modelSelect'), provSel = $('#providerSelect');
+      const moodOverlay = $('#moodOverlay'), moodGrid = $('#moodGrid'), moodDot = $('#moodDot');
+      const micBtn = $('#micBtn'), interimText = $('#interimText');
+      const particlesCanvas = $('#particles');
+      const timeTint = $('#timeTint');
+      const songFileInput = $('#songFile'), songPickBtn = $('#songPickBtn'), songListEl = $('#songList'), songClearAllBtn = $('#songClearAllBtn');
+      const lockBtn = $('#lockBtn');
 
-function animateHappy(cleanup){
-  // Happy squint + dilated pupils + sparkles
-  eyeEls.forEach(e=>{e.style.transition='transform .3s ease';e.style.transform='scaleY(0.5) translateY(-2px)'});
-  pupilEls.forEach(p=>{p.style.transition='transform .3s ease';p.style.transform='scale(1.4)';p.style.transformBox='fill-box';p.style.transformOrigin='center'});
-  glowEl.style.transition='filter .3s ease';glowEl.style.filter='brightness(1.5)';
-  createSparkles();
-  cleanup.push(()=>{glowEl.style.filter=''});
-}
+      // ===================== PROVIDER UI =====================
+      function populateProviders() {
+        provSel.innerHTML = '';
+        Object.keys(PROVIDERS).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = PROVIDERS[k].name; provSel.appendChild(o) });
+      }
+      function populateModels(prov) {
+        modelSel.innerHTML = '';
+        PROVIDERS[prov].models.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; modelSel.appendChild(o) });
+      }
+      function onProviderChange() {
+        const p = provSel.value;
+        populateModels(p);
+        keyIn.placeholder = PROVIDERS[p].placeholder;
+        keyIn.value = localStorage.getItem('comp-key-' + p) || '';
+        modelSel.value = PROVIDERS[p].models[0];
+      }
+      populateProviders();
+      populateModels(provider);
+      provSel.value = provider;
+      modelSel.value = model;
+      provSel.addEventListener('change', onProviderChange);
 
-function animateLove(cleanup){
-  // Heart pupils + floating hearts + pink glow
-  pupilEls.forEach(p=>{p.style.transition='opacity .3s ease';p.style.opacity='0'});
-  // Overlay heart SVGs on each eye
-  const heartOverlays=[];
-  eyeEls.forEach(eye=>{
-    const svg=eye.querySelector('.eye-svg');
-    const c=EC[currentMood]||EC.calm;
-    const h=document.createElementNS('http://www.w3.org/2000/svg','g');
-    h.classList.add('pupil-heart');
-    h.innerHTML=`<path d="${heartPath(c.cx,c.cy,c.px*1.2)}" fill="#ff2060"/>`;
-    const iris=svg.querySelector('.iris');
-    iris.appendChild(h);
-    heartOverlays.push(()=>{h.remove()});
-  });
-  glowEl.style.transition='filter .4s ease';glowEl.style.filter='hue-rotate(300deg) saturate(1.8) brightness(1.2)';
-  createHearts();
-  cleanup.push(()=>{
-    pupilEls.forEach(p=>{p.style.opacity='';p.style.transition=''});
-    heartOverlays.forEach(fn=>fn());
-    glowEl.style.filter='';
-  });
-}
-
-function heartPath(cx,cy,s){
-  // Simple heart centered at cx,cy with size s
-  return `M${cx},${cy+s*0.4} C${cx},${cy+s*0.9} ${cx-s},${cy+s*0.5} ${cx-s},${cy-s*0.1} C${cx-s},${cy-s*0.6} ${cx-s*0.5},${cy-s*0.8} ${cx},${cy-s*0.35} C${cx+s*0.5},${cy-s*0.8} ${cx+s},${cy-s*0.6} ${cx+s},${cy-s*0.1} C${cx+s},${cy+s*0.5} ${cx},${cy+s*0.9} ${cx},${cy+s*0.4}Z`;
-}
-
-function animateAngry(cleanup){
-  // Narrow eyes + shake + red glow + small pupils
-  eyeEls.forEach(e=>{e.style.transition='transform .2s ease';e.style.transform='scaleY(0.5)'});
-  pupilEls.forEach(p=>{p.style.transition='transform .2s ease';p.style.transform='scale(0.6)';p.style.transformBox='fill-box';p.style.transformOrigin='center'});
-  glowEl.style.transition='filter .3s ease';glowEl.style.filter='hue-rotate(-60deg) saturate(2) brightness(1.3)';
-  // Shake
-  let shakeCount=0;
-  const shakeInterval=setInterval(()=>{
-    const dx=(Math.random()-.5)*6,dy=(Math.random()-.5)*2;
-    eyesEl.style.transition='transform .05s linear';
-    eyesEl.style.transform=`translate(${roamX+dx}px,${roamY+dy}px)`;
-    shakeCount++;if(shakeCount>40)clearInterval(shakeInterval);
-  },60);
-  cleanup.push(()=>{
-    clearInterval(shakeInterval);
-    eyesEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';
-    eyesEl.style.transform=`translate(${roamX}px,${roamY}px)`;
-    glowEl.style.filter='';
-  });
-}
-
-function animateScared(cleanup){
-  // Wide eyes + tiny pupils + tremble
-  eyeEls.forEach(e=>{e.style.transition='transform .15s ease';e.style.transform='scale(1.3)'});
-  pupilEls.forEach(p=>{p.style.transition='transform .15s ease';p.style.transform='scale(0.4)';p.style.transformBox='fill-box';p.style.transformOrigin='center'});
-  // Tremble
-  let trembleCount=0;
-  const trembleInterval=setInterval(()=>{
-    const dx=(Math.random()-.5)*3;
-    eyesEl.style.transition='transform .04s linear';
-    eyesEl.style.transform=`translate(${roamX+dx}px,${roamY}px)`;
-    trembleCount++;if(trembleCount>50)clearInterval(trembleInterval);
-  },50);
-  cleanup.push(()=>{
-    clearInterval(trembleInterval);
-    eyesEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';
-    eyesEl.style.transform=`translate(${roamX}px,${roamY}px)`;
-  });
-}
-
-function animateConfused(cleanup){
-  // Asymmetric eyes + cross-eyed + floating ?
-  if(eyeEls.length>=2){
-    eyeEls[0].style.transition='transform .3s ease';eyeEls[0].style.transform='scaleY(0.5)';
-    eyeEls[1].style.transition='transform .3s ease';eyeEls[1].style.transform='scale(1.2)';
-  }
-  if(irisGroups.length>=2){
-    irisGroups[0].style.transition='transform .4s ease';irisGroups[0].style.transform='translate(6px,-3px)';
-    irisGroups[1].style.transition='transform .4s ease';irisGroups[1].style.transform='translate(-5px,4px)';
-  }
-  // Floating ?
-  const faceRect=face.getBoundingClientRect();
-  const eyeRect=eyeEls[1].getBoundingClientRect();
-  const q=document.createElement('div');
-  q.className='question-float';
-  q.textContent='?';
-  q.style.left=(eyeRect.left-faceRect.left+eyeRect.width)+'px';
-  q.style.top=(eyeRect.top-faceRect.top-10)+'px';
-  face.appendChild(q);
-  cleanup.push(()=>{
-    if(irisGroups.length>=2){
-      irisGroups[0].style.transition='transform .3s ease';irisGroups[0].style.transform='translate(0,0)';
-      irisGroups[1].style.transition='transform .3s ease';irisGroups[1].style.transform='translate(0,0)';
-    }
-  });
-}
-
-// ===================== DOM =====================
-const $=s=>document.querySelector(s);
-const $$=s=>document.querySelectorAll(s);
-const face=$('.face'),eyesEl=$('.eyes'),glowEl=$('.glow');
-const eyeEls=[...$$('.eye')];
-let irisGroups=[], pupilEls=[];
-const modal=$('#modal'),keyIn=$('#keyInput'),modelSel=$('#modelSelect'),provSel=$('#providerSelect');
-const moodOverlay=$('#moodOverlay'),moodGrid=$('#moodGrid'),moodDot=$('#moodDot');
-const micBtn=$('#micBtn'),interimText=$('#interimText');
-const particlesCanvas=$('#particles');
-const timeTint=$('#timeTint');
-const songFileInput=$('#songFile'),songPickBtn=$('#songPickBtn'),songListEl=$('#songList'),songClearAllBtn=$('#songClearAllBtn');
-const lockBtn=$('#lockBtn');
-
-// ===================== PROVIDER UI =====================
-function populateProviders(){
-  provSel.innerHTML='';
-  Object.keys(PROVIDERS).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=PROVIDERS[k].name;provSel.appendChild(o)});
-}
-function populateModels(prov){
-  modelSel.innerHTML='';
-  PROVIDERS[prov].models.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;modelSel.appendChild(o)});
-}
-function onProviderChange(){
-  const p=provSel.value;
-  populateModels(p);
-  keyIn.placeholder=PROVIDERS[p].placeholder;
-  keyIn.value=localStorage.getItem('comp-key-'+p)||'';
-  modelSel.value=PROVIDERS[p].models[0];
-}
-populateProviders();
-populateModels(provider);
-provSel.value=provider;
-modelSel.value=model;
-provSel.addEventListener('change',onProviderChange);
-
-// ===================== SVG EYE BUILDER =====================
-function buildEyeSVG(side,c){
-  const s=side;
-  const flameExtra=c.flame?`<animate attributeName="opacity" values="0.12;0.22;0.08;0.18;0.12" dur="0.4s" repeatCount="indefinite"/>`:'';
-  const scanExtra=c.scan?`<rect x="0" y="${c.cy}" width="${c.vw}" height="2" fill="rgba(176,196,255,0.12)"><animate attributeName="y" values="${c.cy-c.ir};${c.cy+c.ir};${c.cy-c.ir}" dur="2s" repeatCount="indefinite"/></rect>`:'';
-  return `<svg class="eye-svg" width="${c.w}" height="${c.h}" viewBox="0 0 ${c.vw} ${c.vh}" preserveAspectRatio="xMidYMid meet">
+      // ===================== SVG EYE BUILDER =====================
+      function buildEyeSVG(side, c) {
+        const s = side;
+        const flameExtra = c.flame ? `<animate attributeName="opacity" values="0.12;0.22;0.08;0.18;0.12" dur="0.4s" repeatCount="indefinite"/>` : '';
+        const scanExtra = c.scan ? `<rect x="0" y="${c.cy}" width="${c.vw}" height="2" fill="rgba(176,196,255,0.12)"><animate attributeName="y" values="${c.cy - c.ir};${c.cy + c.ir};${c.cy - c.ir}" dur="2s" repeatCount="indefinite"/></rect>` : '';
+        return `<svg class="eye-svg" width="${c.w}" height="${c.h}" viewBox="0 0 ${c.vw} ${c.vh}" preserveAspectRatio="xMidYMid meet">
   <defs>
-    <radialGradient id="ig${s}">${c.stops.map(([o,col])=>`<stop offset="${o}" stop-color="${col}"/>`).join('')}</radialGradient>
+    <radialGradient id="ig${s}">${c.stops.map(([o, col]) => `<stop offset="${o}" stop-color="${col}"/>`).join('')}</radialGradient>
     <radialGradient id="sg${s}"><stop offset="0%" stop-color="#10182a"/><stop offset="100%" stop-color="#080c14"/></radialGradient>
     <clipPath id="ec${s}"><path d="${c.path}"/></clipPath>
     <filter id="gf${s}"><feGaussianBlur stdDeviation="5"/></filter>
@@ -691,1077 +1130,1130 @@ function buildEyeSVG(side,c){
   </defs>
   <path d="${c.path}" fill="url(#sg${s})" stroke="${c.glow}" stroke-width="0.6" stroke-opacity="0.12"/>
   <g clip-path="url(#ec${s})">
-    <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.ir+10}" ry="${c.ir+8}" fill="${c.glow}" opacity="0.12" filter="url(#gf${s})">${flameExtra}</ellipse>
+    <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.ir + 10}" ry="${c.ir + 8}" fill="${c.glow}" opacity="0.12" filter="url(#gf${s})">${flameExtra}</ellipse>
     <g class="iris">
       <circle cx="${c.cx}" cy="${c.cy}" r="${c.ir}" fill="url(#ig${s})"/>
       <circle cx="${c.cx}" cy="${c.cy}" r="${c.ir}" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="0.7"/>
-      <circle cx="${c.cx}" cy="${c.cy}" r="${c.ir-2}" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+      <circle cx="${c.cx}" cy="${c.cy}" r="${c.ir - 2}" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
       <ellipse class="pupil" cx="${c.cx}" cy="${c.cy}" rx="${c.px}" ry="${c.py}" fill="#000"/>
-      <ellipse cx="${c.cx-c.ir*0.35}" cy="${c.cy-c.ir*0.3}" rx="${c.ir*0.2}" ry="${c.ir*0.14}" fill="white" opacity="${c.hl}" filter="url(#hf${s})"/>
-      <circle cx="${c.cx+c.ir*0.3}" cy="${c.cy+c.ir*0.28}" r="${c.ir*0.07}" fill="white" opacity="${c.hl*0.35}"/>
+      <ellipse cx="${c.cx - c.ir * 0.35}" cy="${c.cy - c.ir * 0.3}" rx="${c.ir * 0.2}" ry="${c.ir * 0.14}" fill="white" opacity="${c.hl}" filter="url(#hf${s})"/>
+      <circle cx="${c.cx + c.ir * 0.3}" cy="${c.cy + c.ir * 0.28}" r="${c.ir * 0.07}" fill="white" opacity="${c.hl * 0.35}"/>
       ${scanExtra}
     </g>
   </g>
-  ${c.lid?`<path d="${c.lid}" fill="#060610" opacity="${c.lo}"/>`:''}
+  ${c.lid ? `<path d="${c.lid}" fill="#060610" opacity="${c.lo}"/>` : ''}
 </svg>`;
-}
+      }
 
-function buildMiniEye(c,w,h){
-  const s='m'+Math.random().toString(36).slice(2,6);
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${c.vw} ${c.vh}" preserveAspectRatio="xMidYMid meet" overflow="visible">
-  <defs><radialGradient id="ig${s}">${c.stops.map(([o,col])=>`<stop offset="${o}" stop-color="${col}"/>`).join('')}</radialGradient>
+      function buildMiniEye(c, w, h) {
+        const s = 'm' + Math.random().toString(36).slice(2, 6);
+        return `<svg width="${w}" height="${h}" viewBox="0 0 ${c.vw} ${c.vh}" preserveAspectRatio="xMidYMid meet" overflow="visible">
+  <defs><radialGradient id="ig${s}">${c.stops.map(([o, col]) => `<stop offset="${o}" stop-color="${col}"/>`).join('')}</radialGradient>
   <clipPath id="ec${s}"><path d="${c.path}"/></clipPath></defs>
   <path d="${c.path}" fill="#0a0e18"/>
   <g clip-path="url(#ec${s})"><circle cx="${c.cx}" cy="${c.cy}" r="${c.ir}" fill="url(#ig${s})"/>
   <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.px}" ry="${c.py}" fill="#000"/>
-  <ellipse cx="${c.cx-c.ir*0.3}" cy="${c.cy-c.ir*0.25}" rx="${c.ir*0.15}" ry="${c.ir*0.1}" fill="white" opacity="0.4"/></g>
-  ${c.lid?`<path d="${c.lid}" fill="#060610" opacity="${c.lo}"/>`:''}
+  <ellipse cx="${c.cx - c.ir * 0.3}" cy="${c.cy - c.ir * 0.25}" rx="${c.ir * 0.15}" ry="${c.ir * 0.1}" fill="white" opacity="0.4"/></g>
+  ${c.lid ? `<path d="${c.lid}" fill="#060610" opacity="${c.lo}"/>` : ''}
 </svg>`;
-}
+      }
 
-function buildEyes(mood){
-  const c=EC[mood]||EC.calm;
-  eyeEls[0].innerHTML=buildEyeSVG('l',c);
-  eyeEls[1].innerHTML=buildEyeSVG('r',c);
-  eyeEls[0].style.width=c.w+'px';eyeEls[0].style.height=c.h+'px';
-  eyeEls[1].style.width=c.w+'px';eyeEls[1].style.height=c.h+'px';
-  // Apply tilt to SVG for panther
-  const lsvg=eyeEls[0].querySelector('.eye-svg');
-  const rsvg=eyeEls[1].querySelector('.eye-svg');
-  lsvg.style.transform=c.tiltL?`rotate(${c.tiltL}deg)`:'';
-  rsvg.style.transform=c.tiltR?`rotate(${c.tiltR}deg)`:'';
-  // Re-query SVG elements
-  irisGroups=[...document.querySelectorAll('.eye-svg .iris')];
-  pupilEls=[...document.querySelectorAll('.eye-svg .pupil')];
-}
+      function buildEyes(mood) {
+        const c = EC[mood] || EC.calm;
+        eyeEls[0].innerHTML = buildEyeSVG('l', c);
+        eyeEls[1].innerHTML = buildEyeSVG('r', c);
+        eyeEls[0].style.width = c.w + 'px'; eyeEls[0].style.height = c.h + 'px';
+        eyeEls[1].style.width = c.w + 'px'; eyeEls[1].style.height = c.h + 'px';
+        // Apply tilt to SVG for panther
+        const lsvg = eyeEls[0].querySelector('.eye-svg');
+        const rsvg = eyeEls[1].querySelector('.eye-svg');
+        lsvg.style.transform = c.tiltL ? `rotate(${c.tiltL}deg)` : '';
+        rsvg.style.transform = c.tiltR ? `rotate(${c.tiltR}deg)` : '';
+        // Re-query SVG elements
+        irisGroups = [...document.querySelectorAll('.eye-svg .iris')];
+        pupilEls = [...document.querySelectorAll('.eye-svg .pupil')];
+      }
 
-// ===================== MOOD GRID =====================
-function buildMoodGrid(){
-  moodGrid.innerHTML='';
-  Object.keys(MOODS).forEach(key=>{
-    const m=MOODS[key],c=EC[key]||EC.calm;
-    const card=document.createElement('div');
-    card.className='mood-card';card.dataset.mood=key;
-    const tl=c.tiltL?` style="transform:rotate(${c.tiltL}deg)"`:'';
-    const tr=c.tiltR?` style="transform:rotate(${c.tiltR}deg)"`:'';
-    card.innerHTML=`<div class="mood-card-preview">
-      <span${tl}>${buildMiniEye(c,38,22)}</span><span${tr}>${buildMiniEye(c,38,22)}</span>
+      // ===================== MOOD GRID =====================
+      function buildMoodGrid() {
+        moodGrid.innerHTML = '';
+        Object.keys(MOODS).forEach(key => {
+          const m = MOODS[key], c = EC[key] || EC.calm;
+          const card = document.createElement('div');
+          card.className = 'mood-card'; card.dataset.mood = key;
+          const tl = c.tiltL ? ` style="transform:rotate(${c.tiltL}deg)"` : '';
+          const tr = c.tiltR ? ` style="transform:rotate(${c.tiltR}deg)"` : '';
+          card.innerHTML = `<div class="mood-card-preview">
+      <span${tl}>${buildMiniEye(c, 38, 22)}</span><span${tr}>${buildMiniEye(c, 38, 22)}</span>
     </div><div class="mood-card-name">${m.name}</div><div class="mood-card-desc">${m.desc}</div>`;
-    card.addEventListener('click',()=>selectMood(key));
-    moodGrid.appendChild(card);
-  });
-  const rc=document.createElement('div');
-  rc.className='mood-card mood-card-random';
-  rc.innerHTML=`<div class="mood-card-preview" style="font-size:18px;color:rgba(255,255,255,.3)">&#10022;</div><div class="mood-card-name">random</div>`;
-  rc.addEventListener('click',()=>{const k=Object.keys(MOODS);selectMood(k[Math.floor(Math.random()*k.length)])});
-  moodGrid.appendChild(rc);
-}
+          card.addEventListener('click', () => selectMood(key));
+          moodGrid.appendChild(card);
+        });
+        const rc = document.createElement('div');
+        rc.className = 'mood-card mood-card-random';
+        rc.innerHTML = `<div class="mood-card-preview" style="font-size:18px;color:rgba(255,255,255,.3)">&#10022;</div><div class="mood-card-name">random</div>`;
+        rc.addEventListener('click', () => { const k = Object.keys(MOODS); selectMood(k[Math.floor(Math.random() * k.length)]) });
+        moodGrid.appendChild(rc);
+      }
 
-function selectMood(m){currentMood=m;localStorage.setItem(STORE_MOOD,m);applyMood(m);moodOverlay.classList.remove('open')}
-function applyMood(m){
-  const md=MOODS[m]||MOODS.calm;
-  Object.keys(MOODS).forEach(k=>face.classList.remove('mood-'+k));
-  face.classList.add('mood-'+m);
-  moodDot.style.background=md.color;moodDot.style.boxShadow='0 0 8px '+md.color+'33';
-  document.documentElement.style.setProperty('--glow',md.color);
-  document.documentElement.style.setProperty('--glow-dim',md.color+'1f');
-  buildEyes(m);
-  particleColor=hexToRgb(md.color);
-}
-moodDot.addEventListener('click',()=>moodOverlay.classList.add('open'));
+      function selectMood(m) { currentMood = m; localStorage.setItem(STORE_MOOD, m); applyMood(m); moodOverlay.classList.remove('open') }
+      function applyMood(m) {
+        const md = MOODS[m] || MOODS.calm;
+        Object.keys(MOODS).forEach(k => face.classList.remove('mood-' + k));
+        face.classList.add('mood-' + m);
+        moodDot.style.background = md.color; moodDot.style.boxShadow = '0 0 8px ' + md.color + '33';
+        document.documentElement.style.setProperty('--glow', md.color);
+        document.documentElement.style.setProperty('--glow-dim', md.color + '1f');
+        buildEyes(m);
+        particleColor = hexToRgb(md.color);
+      }
+      moodDot.addEventListener('click', () => moodOverlay.classList.add('open'));
 
-// ===================== PARTICLES =====================
-const pCtx=particlesCanvas.getContext('2d');
-let particles=[];
-let particleDim=false;
+      // ===================== PARTICLES =====================
+      const pCtx = particlesCanvas.getContext('2d');
+      let particles = [];
+      let particleDim = false;
 
-function initParticles(){
-  particles=[];
-  for(let i=0;i<40;i++){
-    particles.push({
-      x:Math.random(),y:Math.random(),
-      vx:(Math.random()-.5)*0.0003,
-      vy:(Math.random()-.5)*0.0003,
-      phase:Math.random()*Math.PI*2,
-      speed:0.3+Math.random()*0.7,
-      size:1+Math.random()*2.5,
-      alpha:0.15+Math.random()*0.35
-    });
-  }
-}
-initParticles();
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < 40; i++) {
+          particles.push({
+            x: Math.random(), y: Math.random(),
+            vx: (Math.random() - .5) * 0.0003,
+            vy: (Math.random() - .5) * 0.0003,
+            phase: Math.random() * Math.PI * 2,
+            speed: 0.3 + Math.random() * 0.7,
+            size: 1 + Math.random() * 2.5,
+            alpha: 0.15 + Math.random() * 0.35
+          });
+        }
+      }
+      initParticles();
 
-function resizeParticles(){
-  const r=window.devicePixelRatio||1;
-  const rect=face.getBoundingClientRect();
-  particlesCanvas.width=rect.width*r;
-  particlesCanvas.height=rect.height*r;
-  pCtx.setTransform(r,0,0,r,0,0);
-}
-resizeParticles();
+      function resizeParticles() {
+        const r = window.devicePixelRatio || 1;
+        const rect = face.getBoundingClientRect();
+        particlesCanvas.width = rect.width * r;
+        particlesCanvas.height = rect.height * r;
+        pCtx.setTransform(r, 0, 0, r, 0, 0);
+      }
+      resizeParticles();
 
-function getGlowColor(){
-  const s=getComputedStyle(document.documentElement);
-  return s.getPropertyValue('--glow').trim()||'#00e5ff';
-}
+      function getGlowColor() {
+        const s = getComputedStyle(document.documentElement);
+        return s.getPropertyValue('--glow').trim() || '#00e5ff';
+      }
 
-function hexToRgb(hex){
-  hex=hex.replace('#','');
-  if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-  return{r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)};
-}
+      function hexToRgb(hex) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        return { r: parseInt(hex.slice(0, 2), 16), g: parseInt(hex.slice(2, 4), 16), b: parseInt(hex.slice(4, 6), 16) };
+      }
 
-let particleColor=hexToRgb(getGlowColor());
+      let particleColor = hexToRgb(getGlowColor());
 
-function drawParticles(time){
-  const w=particlesCanvas.width/(window.devicePixelRatio||1);
-  const h=particlesCanvas.height/(window.devicePixelRatio||1);
-  pCtx.clearRect(0,0,w,h);
-  const cx=w/2,cy=h/2;
-  const maxD=Math.sqrt(cx*cx+cy*cy);
-  const dimMul=particleDim?0.2:1;
+      function drawParticles(time) {
+        const w = particlesCanvas.width / (window.devicePixelRatio || 1);
+        const h = particlesCanvas.height / (window.devicePixelRatio || 1);
+        pCtx.clearRect(0, 0, w, h);
+        const cx = w / 2, cy = h / 2;
+        const maxD = Math.sqrt(cx * cx + cy * cy);
+        const dimMul = particleDim ? 0.2 : 1;
 
-  for(const p of particles){
-    const sineX=Math.sin(time*0.001*p.speed+p.phase)*0.005;
-    const sineY=Math.cos(time*0.0008*p.speed+p.phase+1)*0.004;
-    p.x+=p.vx+sineX*0.01;
-    p.y+=p.vy+sineY*0.01;
-    if(p.x<-0.05)p.x=1.05;if(p.x>1.05)p.x=-0.05;
-    if(p.y<-0.05)p.y=1.05;if(p.y>1.05)p.y=-0.05;
+        for (const p of particles) {
+          const sineX = Math.sin(time * 0.001 * p.speed + p.phase) * 0.005;
+          const sineY = Math.cos(time * 0.0008 * p.speed + p.phase + 1) * 0.004;
+          p.x += p.vx + sineX * 0.01;
+          p.y += p.vy + sineY * 0.01;
+          if (p.x < -0.05) p.x = 1.05; if (p.x > 1.05) p.x = -0.05;
+          if (p.y < -0.05) p.y = 1.05; if (p.y > 1.05) p.y = -0.05;
 
-    const px=p.x*w,py=p.y*h;
-    const d=Math.sqrt((px-cx)**2+(py-cy)**2);
-    const edgeFade=Math.max(0,1-d/maxD);
-    const a=p.alpha*edgeFade*dimMul;
-    if(a<0.01)continue;
+          const px = p.x * w, py = p.y * h;
+          const d = Math.sqrt((px - cx) ** 2 + (py - cy) ** 2);
+          const edgeFade = Math.max(0, 1 - d / maxD);
+          const a = p.alpha * edgeFade * dimMul;
+          if (a < 0.01) continue;
 
-    const {r,g,b}=particleColor;
-    pCtx.beginPath();
-    pCtx.arc(px,py,p.size,0,Math.PI*2);
-    pCtx.fillStyle=`rgba(${r},${g},${b},${a})`;
-    pCtx.fill();
-    // Soft glow
-    pCtx.beginPath();
-    pCtx.arc(px,py,p.size*3,0,Math.PI*2);
-    pCtx.fillStyle=`rgba(${r},${g},${b},${a*0.15})`;
-    pCtx.fill();
-  }
-  requestAnimationFrame(drawParticles);
-}
-requestAnimationFrame(drawParticles);
+          const { r, g, b } = particleColor;
+          pCtx.beginPath();
+          pCtx.arc(px, py, p.size, 0, Math.PI * 2);
+          pCtx.fillStyle = `rgba(${r},${g},${b},${a})`;
+          pCtx.fill();
+          // Soft glow
+          pCtx.beginPath();
+          pCtx.arc(px, py, p.size * 3, 0, Math.PI * 2);
+          pCtx.fillStyle = `rgba(${r},${g},${b},${a * 0.15})`;
+          pCtx.fill();
+        }
+        requestAnimationFrame(drawParticles);
+      }
+      requestAnimationFrame(drawParticles);
 
-// ===================== VIEWPORT =====================
-function fitViewport(){const h=window.visualViewport?window.visualViewport.height:window.innerHeight;$('#app').style.height=h+'px';resizeParticles()}
-if(window.visualViewport){window.visualViewport.addEventListener('resize',fitViewport);window.visualViewport.addEventListener('scroll',fitViewport)}
-window.addEventListener('resize',fitViewport);fitViewport();
+      // ===================== VIEWPORT =====================
+      function fitViewport() { const h = window.visualViewport ? window.visualViewport.height : window.innerHeight; $('#app').style.height = h + 'px'; resizeParticles() }
+      if (window.visualViewport) { window.visualViewport.addEventListener('resize', fitViewport); window.visualViewport.addEventListener('scroll', fitViewport) }
+      window.addEventListener('resize', fitViewport); fitViewport();
 
-// ===================== EYE ANIMATION =====================
-let gazeX=0,gazeY=0,targetX=0,targetY=0;
-let eyeState='idle';
-let blinkTimer=null,behaviorTimer=null,behaviorActive=false;
-let roamX=0,roamY=0;
-let saccadeX=0,saccadeY=0;
+      // ===================== EYE ANIMATION =====================
+      let gazeX = 0, gazeY = 0, targetX = 0, targetY = 0;
+      let eyeState = 'idle';
+      let blinkTimer = null, behaviorTimer = null, behaviorActive = false;
+      let roamX = 0, roamY = 0;
+      let saccadeX = 0, saccadeY = 0;
 
-function blink(){
-  const speed=80+Math.random()*80;
-  eyeEls.forEach(e=>e.classList.add('blink'));
-  setTimeout(()=>eyeEls.forEach(e=>e.classList.remove('blink')),speed);
-}
-function scheduleBlink(){
-  blinkTimer=setTimeout(()=>{
-    if(eyeState!=='thinking'&&!behaviorActive) blink();
-    if(Math.random()<.18) setTimeout(()=>{if(eyeState!=='thinking') blink()},200+Math.random()*100);
-    scheduleBlink();
-  },1800+Math.random()*3500);
-}
+      function blink() {
+        const speed = 80 + Math.random() * 80;
+        eyeEls.forEach(e => e.classList.add('blink'));
+        setTimeout(() => eyeEls.forEach(e => e.classList.remove('blink')), speed);
+      }
+      function scheduleBlink() {
+        blinkTimer = setTimeout(() => {
+          if (eyeState !== 'thinking' && !behaviorActive) blink();
+          if (Math.random() < .18) setTimeout(() => { if (eyeState !== 'thinking') blink() }, 200 + Math.random() * 100);
+          scheduleBlink();
+        }, 1800 + Math.random() * 3500);
+      }
 
-function pickGaze(){
-  if(behaviorActive){setTimeout(pickGaze,300);return}
-  if(eyeState==='speaking'){targetX=(Math.random()-.5)*6;targetY=4+Math.random()*4}
-  else if(eyeState==='thinking'){targetX=(Math.random()-.5)*4;targetY=(Math.random()-.5)*3}
-  else{
-    const r=Math.random();
-    if(r<.15){targetX=(Math.random()-.5)*20;targetY=(Math.random()-.5)*12}
-    else if(r<.4){targetX=(Math.random()-.5)*12;targetY=(Math.random()-.5)*8}
-    else{targetX=(Math.random()-.5)*6;targetY=(Math.random()-.5)*4}
-  }
-  setTimeout(pickGaze,600+Math.random()*2000);
-}
+      function pickGaze() {
+        if (behaviorActive) { setTimeout(pickGaze, 300); return }
+        if (eyeState === 'speaking') { targetX = (Math.random() - .5) * 6; targetY = 4 + Math.random() * 4 }
+        else if (eyeState === 'thinking') { targetX = (Math.random() - .5) * 4; targetY = (Math.random() - .5) * 3 }
+        else {
+          const r = Math.random();
+          if (r < .15) { targetX = (Math.random() - .5) * 20; targetY = (Math.random() - .5) * 12 }
+          else if (r < .4) { targetX = (Math.random() - .5) * 12; targetY = (Math.random() - .5) * 8 }
+          else { targetX = (Math.random() - .5) * 6; targetY = (Math.random() - .5) * 4 }
+        }
+        setTimeout(pickGaze, 600 + Math.random() * 2000);
+      }
 
-function microSaccade(){
-  if(eyeState==='idle'&&!behaviorActive){
-    saccadeX=(Math.random()-.5)*2;saccadeY=(Math.random()-.5)*1.5;
-    setTimeout(()=>{saccadeX=0;saccadeY=0},80);
-  }
-  setTimeout(microSaccade,800+Math.random()*2500);
-}
+      function microSaccade() {
+        if (eyeState === 'idle' && !behaviorActive) {
+          saccadeX = (Math.random() - .5) * 2; saccadeY = (Math.random() - .5) * 1.5;
+          setTimeout(() => { saccadeX = 0; saccadeY = 0 }, 80);
+        }
+        setTimeout(microSaccade, 800 + Math.random() * 2500);
+      }
 
-function lidTwitch(){
-  if(eyeState==='idle'&&!behaviorActive){
-    const e=eyeEls[Math.random()<.5?0:1];
-    e.style.transition='transform .06s ease';e.style.transform='scaleY(0.85)';
-    setTimeout(()=>{e.style.transition='transform .08s ease';e.style.transform='';setTimeout(()=>e.style.transition='',100)},70);
-  }
-  setTimeout(lidTwitch,4000+Math.random()*8000);
-}
+      function lidTwitch() {
+        if (eyeState === 'idle' && !behaviorActive) {
+          const e = eyeEls[Math.random() < .5 ? 0 : 1];
+          e.style.transition = 'transform .06s ease'; e.style.transform = 'scaleY(0.85)';
+          setTimeout(() => { e.style.transition = 'transform .08s ease'; e.style.transform = ''; setTimeout(() => e.style.transition = '', 100) }, 70);
+        }
+        setTimeout(lidTwitch, 4000 + Math.random() * 8000);
+      }
 
-function animateGaze(){
-  if(!behaviorActive){
-    gazeX+=(targetX-gazeX)*.12;gazeY+=(targetY-gazeY)*.12;
-    const fx=gazeX+saccadeX,fy=gazeY+saccadeY;
-    irisGroups.forEach(g=>{g.style.transform=`translate(${fx}px,${fy}px)`});
-  }
-  requestAnimationFrame(animateGaze);
-}
+      function animateGaze() {
+        if (!behaviorActive) {
+          gazeX += (targetX - gazeX) * .12; gazeY += (targetY - gazeY) * .12;
+          const fx = gazeX + saccadeX, fy = gazeY + saccadeY;
+          irisGroups.forEach(g => { g.style.transform = `translate(${fx}px,${fy}px)` });
+        }
+        requestAnimationFrame(animateGaze);
+      }
 
-function setEyeState(state){
-  eyeState=state;
-  if(state!=='idle'){eyesEl.style.transform='translate(0,0)';glowEl.style.transform='translate(0,0)';roamX=0;roamY=0}
-  if(state==='listening'){
-    // Widen eyes, dilate pupils, gaze downward
-    eyeEls.forEach(e=>{e.style.transition='transform .3s ease';e.style.transform='scale(1.1)'});
-    pupilEls.forEach(p=>{p.style.transition='transform .3s ease';p.style.transform='scale(1.3)';p.style.transformBox='fill-box';p.style.transformOrigin='center'});
-    targetX=0;targetY=6; // Look toward user/mic
-  }
-}
+      function setEyeState(state) {
+        eyeState = state;
+        if (state !== 'idle') { eyesEl.style.transform = 'translate(0,0)'; glowEl.style.transform = 'translate(0,0)'; roamX = 0; roamY = 0 }
+        if (state === 'listening') {
+          // Widen eyes, dilate pupils, gaze downward
+          eyeEls.forEach(e => { e.style.transition = 'transform .3s ease'; e.style.transform = 'scale(1.1)' });
+          pupilEls.forEach(p => { p.style.transition = 'transform .3s ease'; p.style.transform = 'scale(1.3)'; p.style.transformBox = 'fill-box'; p.style.transformOrigin = 'center' });
+          targetX = 0; targetY = 6; // Look toward user/mic
+        }
+      }
 
-scheduleBlink();pickGaze();animateGaze();microSaccade();lidTwitch();
+      scheduleBlink(); pickGaze(); animateGaze(); microSaccade(); lidTwitch();
 
-// ===================== ROAMING =====================
-function roamEyes(){
-  if(eyeState!=='idle'||behaviorActive||moodOverlay.classList.contains('open')){setTimeout(roamEyes,2000);return}
-  const fr=face.getBoundingClientRect();
-  roamX=(Math.random()-0.5)*fr.width*0.6;
-  roamY=(Math.random()-0.5)*fr.height*0.45;
-  eyesEl.style.transform=`translate(${roamX}px,${roamY}px)`;
-  glowEl.style.transform=`translate(${roamX}px,${roamY}px)`;
-  setTimeout(roamEyes,3000+Math.random()*4000);
-}
-setTimeout(roamEyes,2000);
+      // ===================== ROAMING =====================
+      function roamEyes() {
+        if (eyeState !== 'idle' || behaviorActive || moodOverlay.classList.contains('open')) { setTimeout(roamEyes, 2000); return }
+        const fr = face.getBoundingClientRect();
+        roamX = (Math.random() - 0.5) * fr.width * 0.6;
+        roamY = (Math.random() - 0.5) * fr.height * 0.45;
+        eyesEl.style.transform = `translate(${roamX}px,${roamY}px)`;
+        glowEl.style.transform = `translate(${roamX}px,${roamY}px)`;
+        setTimeout(roamEyes, 3000 + Math.random() * 4000);
+      }
+      setTimeout(roamEyes, 2000);
 
-// ===================== IDLE BEHAVIORS =====================
-const behaviors=[
-  // Eye roll
-  function(done){
-    behaviorActive=true;
-    const steps=[{x:10,y:0},{x:8,y:-8},{x:0,y:-11},{x:-8,y:-8},{x:-10,y:0},{x:-8,y:8},{x:0,y:8},{x:0,y:0}];
-    let i=0;
-    (function step(){
-      if(i>=steps.length){behaviorActive=false;done();return}
-      irisGroups.forEach(g=>{g.style.transition='transform .1s linear';g.style.transform=`translate(${steps[i].x}px,${steps[i].y}px)`});
-      i++;setTimeout(step,110);
-    })();
-  },
-  // Suspicious squint
-  function(done){
-    behaviorActive=true;
-    eyeEls.forEach(e=>{e.style.transition='transform .4s ease';e.style.transform='scaleY(0.4)'});
-    setTimeout(()=>{eyeEls.forEach(e=>{e.style.transform='';e.style.transition=''});behaviorActive=false;done()},1000);
-  },
-  // Cross-eyed
-  function(done){
-    behaviorActive=true;
-    if(irisGroups.length>=2){
-      irisGroups[0].style.transition='transform .3s ease';irisGroups[0].style.transform='translate(8px,0)';
-      irisGroups[1].style.transition='transform .3s ease';irisGroups[1].style.transform='translate(-8px,0)';
-    }
-    setTimeout(()=>{irisGroups.forEach(g=>{g.style.transition='transform .3s ease';g.style.transform='translate(0,0)'});
-      setTimeout(()=>{irisGroups.forEach(g=>g.style.transition='');behaviorActive=false;done()},350)},800);
-  },
-  // Wink
-  function(done){
-    const e=eyeEls[Math.random()<.5?0:1];
-    e.classList.add('blink');setTimeout(()=>{e.classList.remove('blink');done()},350);
-  },
-  // Surprised
-  function(done){
-    behaviorActive=true;
-    eyeEls.forEach(e=>{e.style.transition='transform .15s ease';e.style.transform='scale(1.2)'});
-    pupilEls.forEach(p=>{p.style.transition='transform .15s ease';p.style.transform='scale(0.5)';p.style.transformBox='fill-box';p.style.transformOrigin='center'});
-    setTimeout(()=>{
-      eyeEls.forEach(e=>{e.style.transition='transform .4s ease';e.style.transform=''});
-      pupilEls.forEach(p=>{p.style.transition='transform .4s ease';p.style.transform=''});
-      setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');pupilEls.forEach(p=>p.style.transition='');behaviorActive=false;done()},450);
-    },700);
-  },
-  // Dizzy
-  function(done){
-    behaviorActive=true;const start=performance.now();
-    (function anim(now){
-      const t=now-start;if(t>1500){irisGroups.forEach(g=>g.style.transform='translate(0,0)');behaviorActive=false;done();return}
-      const a=t/1500*Math.PI*6,r=4*(1-t/1500);
-      irisGroups.forEach(g=>{g.style.transform=`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px)`});
-      requestAnimationFrame(anim);
-    })(performance.now());
-  },
-  // Sleepy droop
-  function(done){
-    behaviorActive=true;
-    eyeEls.forEach(e=>{e.style.transition='transform .8s ease';e.style.transform='scaleY(0.25)'});
-    setTimeout(()=>{eyeEls.forEach(e=>{e.style.transition='transform .12s ease';e.style.transform=''});
-      setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');behaviorActive=false;done()},200)},1200);
-  },
-  // Happy squint
-  function(done){
-    behaviorActive=true;
-    eyeEls.forEach(e=>{e.style.transition='transform .3s ease';e.style.transform='scaleY(0.45) translateY(-2px)'});
-    setTimeout(()=>{eyeEls.forEach(e=>{e.style.transition='transform .3s ease';e.style.transform=''});
-      setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');behaviorActive=false;done()},350)},800);
-  },
-  // Look-around scan
-  function(done){
-    behaviorActive=true;
-    const seq=[{x:-14,y:0},{x:14,y:0},{x:-8,y:0},{x:0,y:0}];let i=0;
-    (function step(){
-      if(i>=seq.length){irisGroups.forEach(g=>g.style.transition='');behaviorActive=false;done();return}
-      irisGroups.forEach(g=>{g.style.transition='transform .12s ease';g.style.transform=`translate(${seq[i].x}px,${seq[i].y}px)`});
-      i++;setTimeout(step,180);
-    })();
-  },
-  // Startle
-  function(done){
-    behaviorActive=true;
-    eyeEls.forEach(e=>{e.style.transition='transform .08s ease';e.style.transform='scale(1.2)'});
-    setTimeout(()=>{eyeEls.forEach(e=>{e.style.transition='transform .5s ease';e.style.transform=''});
-      setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');behaviorActive=false;done()},550)},250);
-  },
-  // Dash across
-  function(done){
-    behaviorActive=true;const fr=face.getBoundingClientRect();
-    const dx=(Math.random()<.5?-1:1)*fr.width*0.35;
-    eyesEl.style.transition='transform .2s cubic-bezier(.2,0,.6,1)';glowEl.style.transition='transform .2s cubic-bezier(.2,0,.6,1)';
-    eyesEl.style.transform=`translate(${dx}px,${roamY}px)`;glowEl.style.transform=`translate(${dx}px,${roamY}px)`;
-    eyeEls.forEach(e=>{e.style.transition='transform .15s ease';e.style.transform='scaleY(0.7)'});
-    setTimeout(()=>{
-      eyeEls.forEach(e=>{e.style.transform='';e.style.transition=''});
-      setTimeout(()=>{
-        eyesEl.style.transition='transform 1.2s cubic-bezier(.25,.9,.5,1)';glowEl.style.transition='transform 1.2s cubic-bezier(.25,.9,.5,1)';
-        eyesEl.style.transform=`translate(${roamX}px,${roamY}px)`;glowEl.style.transform=`translate(${roamX}px,${roamY}px)`;
-        setTimeout(()=>{eyesEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';glowEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';behaviorActive=false;done()},1300);
-      },500);
-    },300);
-  },
-  // Peek from corner
-  function(done){
-    behaviorActive=true;const fr=face.getBoundingClientRect();
-    const cx=(Math.random()<.5?-1:1)*fr.width*0.38,cy=(Math.random()<.5?-1:1)*fr.height*0.28;
-    eyesEl.style.transition='transform .5s ease';glowEl.style.transition='transform .5s ease';
-    eyesEl.style.transform=`translate(${cx}px,${cy}px)`;glowEl.style.transform=`translate(${cx}px,${cy}px)`;
-    setTimeout(()=>{
-      eyeEls.forEach(e=>{e.style.transition='transform .2s ease';e.style.transform='scale(1.1)'});
-      setTimeout(()=>{
-        eyeEls.forEach(e=>{e.style.transition='transform .4s ease';e.style.transform=''});
-        eyesEl.style.transition='transform 1.5s cubic-bezier(.25,.9,.5,1)';glowEl.style.transition='transform 1.5s cubic-bezier(.25,.9,.5,1)';
-        eyesEl.style.transform=`translate(${roamX}px,${roamY}px)`;glowEl.style.transform=`translate(${roamX}px,${roamY}px)`;
-        setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');eyesEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';glowEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';behaviorActive=false;done()},1600);
-      },800);
-    },550);
-  },
-  // Bounce
-  function(done){
-    behaviorActive=true;let b=0;const by=roamY;
-    (function go(){
-      if(b>=3){eyesEl.style.transition='transform .6s ease';glowEl.style.transition='transform .6s ease';
-        eyesEl.style.transform=`translate(${roamX}px,${by}px)`;glowEl.style.transform=`translate(${roamX}px,${by}px)`;
-        setTimeout(()=>{eyesEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';glowEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';behaviorActive=false;done()},650);return}
-      const jh=25-b*7;
-      eyesEl.style.transition='transform .18s cubic-bezier(.2,0,.6,1)';glowEl.style.transition='transform .18s cubic-bezier(.2,0,.6,1)';
-      eyesEl.style.transform=`translate(${roamX}px,${by-jh}px)`;glowEl.style.transform=`translate(${roamX}px,${by-jh}px)`;
-      setTimeout(()=>{
-        eyesEl.style.transition='transform .15s cubic-bezier(.6,0,1,1)';glowEl.style.transition='transform .15s cubic-bezier(.6,0,1,1)';
-        eyesEl.style.transform=`translate(${roamX}px,${by}px)`;glowEl.style.transform=`translate(${roamX}px,${by}px)`;
-        eyeEls.forEach(e=>{e.style.transition='transform .08s ease';e.style.transform='scaleY(0.8) scaleX(1.1)'});
-        setTimeout(()=>{eyeEls.forEach(e=>{e.style.transition='transform .15s ease';e.style.transform=''});b++;setTimeout(go,120)},100);
-      },200);
-    })();
-  },
-  // Slow creep
-  function(done){
-    behaviorActive=true;const fr=face.getBoundingClientRect();const dir=Math.random()<.5?-1:1;
-    const cx=roamX+dir*fr.width*0.25;
-    eyeEls.forEach(e=>{e.style.transition='transform 1.5s ease';e.style.transform='scaleY(0.55)'});
-    eyesEl.style.transition='transform 2.5s linear';glowEl.style.transition='transform 2.5s linear';
-    eyesEl.style.transform=`translate(${cx}px,${roamY}px)`;glowEl.style.transform=`translate(${cx}px,${roamY}px)`;
-    setTimeout(()=>{
-      eyeEls.forEach(e=>{e.style.transition='transform .3s ease';e.style.transform=''});
-      eyesEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';glowEl.style.transition='transform 1.8s cubic-bezier(.25,.9,.5,1)';
-      eyesEl.style.transform=`translate(${roamX}px,${roamY}px)`;glowEl.style.transform=`translate(${roamX}px,${roamY}px)`;
-      setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');behaviorActive=false;done()},1900);
-    },2600);
-  }
-];
-
-function scheduleBehavior(){
-  behaviorTimer=setTimeout(()=>{
-    if(eyeState==='idle'&&!behaviorActive){behaviors[Math.floor(Math.random()*behaviors.length)](()=>{})}
-    scheduleBehavior();
-  },3000+Math.random()*5000);
-}
-scheduleBehavior();
-
-// ===================== CHAT (voice only) =====================
-let history=[],abortCtrl=null,busy=false;
-
-async function send(text){
-  if(!apiKey){modal.classList.add('open');keyIn.focus();return}
-  if(busy)return;busy=true;
-  resetIdleTimer();
-  history.push({role:'user',content:text});
-  const userEmotion=detectEmotion(text);if(userEmotion)triggerEmotion(userEmotion);
-  setEyeState('thinking');
-  abortCtrl=new AbortController();let full='',firstToken=true;
-  const prov=PROVIDERS[provider];
-  const isAnthropic=provider==='anthropic';
-  try{
-    let headers,body;
-    if(isAnthropic){
-      headers={'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
-      body=JSON.stringify({model,max_tokens:1024,stream:true,system:getSystemPrompt(),messages:history.slice(-30)});
-    }else{
-      headers={'Content-Type':'application/json','Authorization':'Bearer '+apiKey};
-      const msgs=[{role:'system',content:getSystemPrompt()},...history.slice(-30)];
-      body=JSON.stringify({model,max_tokens:1024,stream:true,messages:msgs});
-    }
-    const res=await fetch(prov.url,{method:'POST',signal:abortCtrl.signal,headers,body});
-    if(!res.ok){const err=await res.json().catch(()=>null);throw new Error(err?.error?.message||'HTTP '+res.status)}
-    const reader=res.body.getReader(),dec=new TextDecoder();let buf='';
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
-      for(const line of lines){
-        if(!line.startsWith('data: '))continue;const json=line.slice(6);if(json==='[DONE]')continue;
-        try{const d=JSON.parse(json);
-          let chunk='';
-          if(isAnthropic){
-            if(d.type==='content_block_delta'&&d.delta?.type==='text_delta') chunk=d.delta.text;
-          }else{
-            chunk=d.choices?.[0]?.delta?.content||'';
+      // ===================== IDLE BEHAVIORS =====================
+      const behaviors = [
+        // Eye roll
+        function (done) {
+          behaviorActive = true;
+          const steps = [{ x: 10, y: 0 }, { x: 8, y: -8 }, { x: 0, y: -11 }, { x: -8, y: -8 }, { x: -10, y: 0 }, { x: -8, y: 8 }, { x: 0, y: 8 }, { x: 0, y: 0 }];
+          let i = 0;
+          (function step() {
+            if (i >= steps.length) { behaviorActive = false; done(); return }
+            irisGroups.forEach(g => { g.style.transition = 'transform .1s linear'; g.style.transform = `translate(${steps[i].x}px,${steps[i].y}px)` });
+            i++; setTimeout(step, 110);
+          })();
+        },
+        // Suspicious squint
+        function (done) {
+          behaviorActive = true;
+          eyeEls.forEach(e => { e.style.transition = 'transform .4s ease'; e.style.transform = 'scaleY(0.4)' });
+          setTimeout(() => { eyeEls.forEach(e => { e.style.transform = ''; e.style.transition = '' }); behaviorActive = false; done() }, 1000);
+        },
+        // Cross-eyed
+        function (done) {
+          behaviorActive = true;
+          if (irisGroups.length >= 2) {
+            irisGroups[0].style.transition = 'transform .3s ease'; irisGroups[0].style.transform = 'translate(8px,0)';
+            irisGroups[1].style.transition = 'transform .3s ease'; irisGroups[1].style.transform = 'translate(-8px,0)';
           }
-          if(chunk){
-            if(firstToken){setEyeState('speaking');firstToken=false}
-            full+=chunk;
+          setTimeout(() => {
+            irisGroups.forEach(g => { g.style.transition = 'transform .3s ease'; g.style.transform = 'translate(0,0)' });
+            setTimeout(() => { irisGroups.forEach(g => g.style.transition = ''); behaviorActive = false; done() }, 350)
+          }, 800);
+        },
+        // Wink
+        function (done) {
+          const e = eyeEls[Math.random() < .5 ? 0 : 1];
+          e.classList.add('blink'); setTimeout(() => { e.classList.remove('blink'); done() }, 350);
+        },
+        // Surprised
+        function (done) {
+          behaviorActive = true;
+          eyeEls.forEach(e => { e.style.transition = 'transform .15s ease'; e.style.transform = 'scale(1.2)' });
+          pupilEls.forEach(p => { p.style.transition = 'transform .15s ease'; p.style.transform = 'scale(0.5)'; p.style.transformBox = 'fill-box'; p.style.transformOrigin = 'center' });
+          setTimeout(() => {
+            eyeEls.forEach(e => { e.style.transition = 'transform .4s ease'; e.style.transform = '' });
+            pupilEls.forEach(p => { p.style.transition = 'transform .4s ease'; p.style.transform = '' });
+            setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); pupilEls.forEach(p => p.style.transition = ''); behaviorActive = false; done() }, 450);
+          }, 700);
+        },
+        // Dizzy
+        function (done) {
+          behaviorActive = true; const start = performance.now();
+          (function anim(now) {
+            const t = now - start; if (t > 1500) { irisGroups.forEach(g => g.style.transform = 'translate(0,0)'); behaviorActive = false; done(); return }
+            const a = t / 1500 * Math.PI * 6, r = 4 * (1 - t / 1500);
+            irisGroups.forEach(g => { g.style.transform = `translate(${Math.cos(a) * r}px,${Math.sin(a) * r}px)` });
+            requestAnimationFrame(anim);
+          })(performance.now());
+        },
+        // Sleepy droop
+        function (done) {
+          behaviorActive = true;
+          eyeEls.forEach(e => { e.style.transition = 'transform .8s ease'; e.style.transform = 'scaleY(0.25)' });
+          setTimeout(() => {
+            eyeEls.forEach(e => { e.style.transition = 'transform .12s ease'; e.style.transform = '' });
+            setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); behaviorActive = false; done() }, 200)
+          }, 1200);
+        },
+        // Happy squint
+        function (done) {
+          behaviorActive = true;
+          eyeEls.forEach(e => { e.style.transition = 'transform .3s ease'; e.style.transform = 'scaleY(0.45) translateY(-2px)' });
+          setTimeout(() => {
+            eyeEls.forEach(e => { e.style.transition = 'transform .3s ease'; e.style.transform = '' });
+            setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); behaviorActive = false; done() }, 350)
+          }, 800);
+        },
+        // Look-around scan
+        function (done) {
+          behaviorActive = true;
+          const seq = [{ x: -14, y: 0 }, { x: 14, y: 0 }, { x: -8, y: 0 }, { x: 0, y: 0 }]; let i = 0;
+          (function step() {
+            if (i >= seq.length) { irisGroups.forEach(g => g.style.transition = ''); behaviorActive = false; done(); return }
+            irisGroups.forEach(g => { g.style.transition = 'transform .12s ease'; g.style.transform = `translate(${seq[i].x}px,${seq[i].y}px)` });
+            i++; setTimeout(step, 180);
+          })();
+        },
+        // Startle
+        function (done) {
+          behaviorActive = true;
+          eyeEls.forEach(e => { e.style.transition = 'transform .08s ease'; e.style.transform = 'scale(1.2)' });
+          setTimeout(() => {
+            eyeEls.forEach(e => { e.style.transition = 'transform .5s ease'; e.style.transform = '' });
+            setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); behaviorActive = false; done() }, 550)
+          }, 250);
+        },
+        // Dash across
+        function (done) {
+          behaviorActive = true; const fr = face.getBoundingClientRect();
+          const dx = (Math.random() < .5 ? -1 : 1) * fr.width * 0.35;
+          eyesEl.style.transition = 'transform .2s cubic-bezier(.2,0,.6,1)'; glowEl.style.transition = 'transform .2s cubic-bezier(.2,0,.6,1)';
+          eyesEl.style.transform = `translate(${dx}px,${roamY}px)`; glowEl.style.transform = `translate(${dx}px,${roamY}px)`;
+          eyeEls.forEach(e => { e.style.transition = 'transform .15s ease'; e.style.transform = 'scaleY(0.7)' });
+          setTimeout(() => {
+            eyeEls.forEach(e => { e.style.transform = ''; e.style.transition = '' });
+            setTimeout(() => {
+              eyesEl.style.transition = 'transform 1.2s cubic-bezier(.25,.9,.5,1)'; glowEl.style.transition = 'transform 1.2s cubic-bezier(.25,.9,.5,1)';
+              eyesEl.style.transform = `translate(${roamX}px,${roamY}px)`; glowEl.style.transform = `translate(${roamX}px,${roamY}px)`;
+              setTimeout(() => { eyesEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)'; glowEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)'; behaviorActive = false; done() }, 1300);
+            }, 500);
+          }, 300);
+        },
+        // Peek from corner
+        function (done) {
+          behaviorActive = true; const fr = face.getBoundingClientRect();
+          const cx = (Math.random() < .5 ? -1 : 1) * fr.width * 0.38, cy = (Math.random() < .5 ? -1 : 1) * fr.height * 0.28;
+          eyesEl.style.transition = 'transform .5s ease'; glowEl.style.transition = 'transform .5s ease';
+          eyesEl.style.transform = `translate(${cx}px,${cy}px)`; glowEl.style.transform = `translate(${cx}px,${cy}px)`;
+          setTimeout(() => {
+            eyeEls.forEach(e => { e.style.transition = 'transform .2s ease'; e.style.transform = 'scale(1.1)' });
+            setTimeout(() => {
+              eyeEls.forEach(e => { e.style.transition = 'transform .4s ease'; e.style.transform = '' });
+              eyesEl.style.transition = 'transform 1.5s cubic-bezier(.25,.9,.5,1)'; glowEl.style.transition = 'transform 1.5s cubic-bezier(.25,.9,.5,1)';
+              eyesEl.style.transform = `translate(${roamX}px,${roamY}px)`; glowEl.style.transform = `translate(${roamX}px,${roamY}px)`;
+              setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); eyesEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)'; glowEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)'; behaviorActive = false; done() }, 1600);
+            }, 800);
+          }, 550);
+        },
+        // Bounce
+        function (done) {
+          behaviorActive = true; let b = 0; const by = roamY;
+          (function go() {
+            if (b >= 3) {
+              eyesEl.style.transition = 'transform .6s ease'; glowEl.style.transition = 'transform .6s ease';
+              eyesEl.style.transform = `translate(${roamX}px,${by}px)`; glowEl.style.transform = `translate(${roamX}px,${by}px)`;
+              setTimeout(() => { eyesEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)'; glowEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)'; behaviorActive = false; done() }, 650); return
+            }
+            const jh = 25 - b * 7;
+            eyesEl.style.transition = 'transform .18s cubic-bezier(.2,0,.6,1)'; glowEl.style.transition = 'transform .18s cubic-bezier(.2,0,.6,1)';
+            eyesEl.style.transform = `translate(${roamX}px,${by - jh}px)`; glowEl.style.transform = `translate(${roamX}px,${by - jh}px)`;
+            setTimeout(() => {
+              eyesEl.style.transition = 'transform .15s cubic-bezier(.6,0,1,1)'; glowEl.style.transition = 'transform .15s cubic-bezier(.6,0,1,1)';
+              eyesEl.style.transform = `translate(${roamX}px,${by}px)`; glowEl.style.transform = `translate(${roamX}px,${by}px)`;
+              eyeEls.forEach(e => { e.style.transition = 'transform .08s ease'; e.style.transform = 'scaleY(0.8) scaleX(1.1)' });
+              setTimeout(() => { eyeEls.forEach(e => { e.style.transition = 'transform .15s ease'; e.style.transform = '' }); b++; setTimeout(go, 120) }, 100);
+            }, 200);
+          })();
+        },
+        // Slow creep
+        function (done) {
+          behaviorActive = true; const fr = face.getBoundingClientRect(); const dir = Math.random() < .5 ? -1 : 1;
+          const cx = roamX + dir * fr.width * 0.25;
+          eyeEls.forEach(e => { e.style.transition = 'transform 1.5s ease'; e.style.transform = 'scaleY(0.55)' });
+          eyesEl.style.transition = 'transform 2.5s linear'; glowEl.style.transition = 'transform 2.5s linear';
+          eyesEl.style.transform = `translate(${cx}px,${roamY}px)`; glowEl.style.transform = `translate(${cx}px,${roamY}px)`;
+          setTimeout(() => {
+            eyeEls.forEach(e => { e.style.transition = 'transform .3s ease'; e.style.transform = '' });
+            eyesEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)'; glowEl.style.transition = 'transform 1.8s cubic-bezier(.25,.9,.5,1)';
+            eyesEl.style.transform = `translate(${roamX}px,${roamY}px)`; glowEl.style.transform = `translate(${roamX}px,${roamY}px)`;
+            setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); behaviorActive = false; done() }, 1900);
+          }, 2600);
+        }
+      ];
+
+      function scheduleBehavior() {
+        behaviorTimer = setTimeout(() => {
+          if (eyeState === 'idle' && !behaviorActive) { behaviors[Math.floor(Math.random() * behaviors.length)](() => { }) }
+          scheduleBehavior();
+        }, 3000 + Math.random() * 5000);
+      }
+      scheduleBehavior();
+
+      // ===================== CHAT (voice only) =====================
+      let history = [], abortCtrl = null, busy = false;
+
+      async function send(text) {
+        if (!apiKey) { modal.classList.add('open'); keyIn.focus(); return }
+        if (busy) return; busy = true;
+        resetIdleTimer();
+        history.push({ role: 'user', content: text });
+        const userEmotion = detectEmotion(text); if (userEmotion) triggerEmotion(userEmotion);
+        setEyeState('thinking');
+        abortCtrl = new AbortController(); let full = '', firstToken = true;
+        const prov = PROVIDERS[provider];
+        const isAnthropic = provider === 'anthropic';
+        try {
+          let headers, body;
+          if (isAnthropic) {
+            headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' };
+            body = JSON.stringify({ model, max_tokens: 1024, stream: true, system: getSystemPrompt(), messages: history.slice(-30) });
+          } else {
+            headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey };
+            const msgs = [{ role: 'system', content: getSystemPrompt() }, ...history.slice(-30)];
+            body = JSON.stringify({ model, max_tokens: 1024, stream: true, messages: msgs });
           }
-        }catch(_){}
+          const res = await fetch(prov.url, { method: 'POST', signal: abortCtrl.signal, headers, body });
+          if (!res.ok) { const err = await res.json().catch(() => null); throw new Error(err?.error?.message || 'HTTP ' + res.status) }
+          const reader = res.body.getReader(), dec = new TextDecoder(); let buf = '';
+          while (true) {
+            const { done, value } = await reader.read(); if (done) break;
+            buf += dec.decode(value, { stream: true }); const lines = buf.split('\n'); buf = lines.pop();
+            for (const line of lines) {
+              if (!line.startsWith('data: ')) continue; const json = line.slice(6); if (json === '[DONE]') continue;
+              try {
+                const d = JSON.parse(json);
+                let chunk = '';
+                if (isAnthropic) {
+                  if (d.type === 'content_block_delta' && d.delta?.type === 'text_delta') chunk = d.delta.text;
+                } else {
+                  chunk = d.choices?.[0]?.delta?.content || '';
+                }
+                if (chunk) {
+                  if (firstToken) { setEyeState('speaking'); firstToken = false }
+                  full += chunk;
+                }
+              } catch (_) { }
+            }
+          }
+          if (full) {
+            history.push({ role: 'assistant', content: full });
+            const aiEmotion = detectEmotion(full); if (aiEmotion) triggerEmotion(aiEmotion);
+            if (window.speechSynthesis) {
+              speakText(full);
+              busy = false; abortCtrl = null;
+              return;
+            }
+          }
+        } catch (err) { if (err.name !== 'AbortError') console.warn('API error:', err.message) }
+        finally { if (!ttsActive) { setEyeState('idle'); busy = false; abortCtrl = null } }
       }
-    }
-    if(full){
-      history.push({role:'assistant',content:full});
-      const aiEmotion=detectEmotion(full);if(aiEmotion)triggerEmotion(aiEmotion);
-      if(window.speechSynthesis){
-        speakText(full);
-        busy=false;abortCtrl=null;
-        return;
+
+      // ===================== SETTINGS =====================
+      $('#gear').addEventListener('click', () => { provSel.value = provider; populateModels(provider); keyIn.placeholder = PROVIDERS[provider].placeholder; keyIn.value = apiKey; modelSel.value = model; modal.classList.add('open') });
+      $('#saveBtn').addEventListener('click', () => { provider = provSel.value; apiKey = keyIn.value.trim(); model = modelSel.value; localStorage.setItem(STORE_PROVIDER, provider); localStorage.setItem('comp-key-' + provider, apiKey); localStorage.setItem(STORE_MODEL, model); modal.classList.remove('open') });
+      $('#cancelBtn').addEventListener('click', () => modal.classList.remove('open'));
+      modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open') });
+
+      // ===================== LOCK BUTTON =====================
+      let screenLocked = false;
+      lockBtn.addEventListener('click', () => {
+        screenLocked = !screenLocked;
+        document.body.classList.toggle('locked', screenLocked);
+        lockBtn.classList.toggle('locked', screenLocked);
+        // Update lock icon
+        if (screenLocked) {
+          lockBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+        } else {
+          lockBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5"/></svg>';
+        }
+      });
+
+      // ===================== VOICE INPUT =====================
+      let micActive = false, ttsActive = false;
+      let audioCtx = null, analyser = null, micStream = null;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+
+      let micToggledOn = false; // user wants mic to stay on
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+          micActive = true;
+          micBtn.classList.add('listening');
+          if (!ttsActive && !busy) setEyeState('listening');
+          interimText.textContent = '';
+          interimText.classList.add('visible');
+        };
+
+        recognition.onresult = (e) => {
+          let interim = '', final = '';
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) { final += e.results[i][0].transcript }
+            else { interim += e.results[i][0].transcript }
+          }
+          if (final) {
+            interimText.textContent = final;
+            send(final.trim());
+            // Don't stop mic — it stays on in continuous mode
+          } else {
+            interimText.textContent = interim;
+          }
+        };
+
+        recognition.onerror = (e) => {
+          if (e.error === 'no-speech' || e.error === 'aborted') return;
+          console.warn('Speech error:', e.error);
+          if (e.error === 'not-allowed') { micToggledOn = false; stopMic() }
+        };
+
+        recognition.onend = () => {
+          micActive = false;
+          // Auto-restart if user toggled mic on and we're not speaking
+          if (micToggledOn && !ttsActive) {
+            setTimeout(() => {
+              if (micToggledOn) { try { recognition.start() } catch (e) { } }
+            }, 300);
+          } else {
+            micBtn.classList.remove('listening');
+            interimText.classList.remove('visible');
+            if (eyeState === 'listening') setEyeState('idle');
+          }
+        };
       }
-    }
-  }catch(err){if(err.name!=='AbortError')console.warn('API error:',err.message)}
-  finally{if(!ttsActive){setEyeState('idle');busy=false;abortCtrl=null}}
-}
 
-// ===================== SETTINGS =====================
-$('#gear').addEventListener('click',()=>{provSel.value=provider;populateModels(provider);keyIn.placeholder=PROVIDERS[provider].placeholder;keyIn.value=apiKey;modelSel.value=model;modal.classList.add('open')});
-$('#saveBtn').addEventListener('click',()=>{provider=provSel.value;apiKey=keyIn.value.trim();model=modelSel.value;localStorage.setItem(STORE_PROVIDER,provider);localStorage.setItem('comp-key-'+provider,apiKey);localStorage.setItem(STORE_MODEL,model);modal.classList.remove('open')});
-$('#cancelBtn').addEventListener('click',()=>modal.classList.remove('open'));
-modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});
-
-// ===================== LOCK BUTTON =====================
-let screenLocked=false;
-lockBtn.addEventListener('click',()=>{
-  screenLocked=!screenLocked;
-  document.body.classList.toggle('locked',screenLocked);
-  lockBtn.classList.toggle('locked',screenLocked);
-  // Update lock icon
-  if(screenLocked){
-    lockBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
-  }else{
-    lockBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5"/></svg>';
-  }
-});
-
-// ===================== VOICE INPUT =====================
-let micActive=false,ttsActive=false;
-let audioCtx=null,analyser=null,micStream=null;
-const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-let recognition=null;
-
-let micToggledOn=false; // user wants mic to stay on
-
-if(SpeechRecognition){
-  recognition=new SpeechRecognition();
-  recognition.lang='en-US';
-  recognition.interimResults=true;
-  recognition.continuous=true;
-  recognition.maxAlternatives=1;
-
-  recognition.onstart=()=>{
-    micActive=true;
-    micBtn.classList.add('listening');
-    if(!ttsActive&&!busy)setEyeState('listening');
-    interimText.textContent='';
-    interimText.classList.add('visible');
-  };
-
-  recognition.onresult=(e)=>{
-    let interim='',final='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal){final+=e.results[i][0].transcript}
-      else{interim+=e.results[i][0].transcript}
-    }
-    if(final){
-      interimText.textContent=final;
-      send(final.trim());
-      // Don't stop mic — it stays on in continuous mode
-    }else{
-      interimText.textContent=interim;
-    }
-  };
-
-  recognition.onerror=(e)=>{
-    if(e.error==='no-speech'||e.error==='aborted')return;
-    console.warn('Speech error:',e.error);
-    if(e.error==='not-allowed'){micToggledOn=false;stopMic()}
-  };
-
-  recognition.onend=()=>{
-    micActive=false;
-    // Auto-restart if user toggled mic on and we're not speaking
-    if(micToggledOn&&!ttsActive){
-      setTimeout(()=>{
-        if(micToggledOn){try{recognition.start()}catch(e){}}
-      },300);
-    }else{
-      micBtn.classList.remove('listening');
-      interimText.classList.remove('visible');
-      if(eyeState==='listening')setEyeState('idle');
-    }
-  };
-}
-
-function startMic(){
-  if(!recognition||micActive)return;
-  micToggledOn=true;
-  try{
-    recognition.start();
-    // Get mic stream for volume analysis
-    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
-      micStream=stream;
-      if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-      analyser=audioCtx.createAnalyser();
-      analyser.fftSize=256;
-      const src=audioCtx.createMediaStreamSource(stream);
-      src.connect(analyser);
-      animateVolume();
-    }).catch(()=>{});
-  }catch(e){console.warn('Mic start failed:',e)}
-}
-
-function stopMic(){
-  micToggledOn=false;
-  micActive=false;
-  try{recognition.stop()}catch(e){}
-  micBtn.classList.remove('listening');
-  interimText.classList.remove('visible');
-  if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}
-  analyser=null;
-  if(eyeState==='listening')setEyeState('idle');
-  pupilEls.forEach(p=>{p.style.transition='transform .3s ease';p.style.transform='';
-    setTimeout(()=>{p.style.transition=''},350)});
-  eyeEls.forEach(e=>{if(!behaviorActive&&!emotionActive){e.style.transition='transform .3s ease';e.style.transform='';
-    setTimeout(()=>{e.style.transition=''},350)}});
-}
-
-function animateVolume(){
-  if(!analyser||!micActive)return;
-  const data=new Uint8Array(analyser.frequencyBinCount);
-  analyser.getByteFrequencyData(data);
-  let sum=0;for(let i=0;i<data.length;i++)sum+=data[i];
-  const avg=sum/data.length/255; // 0-1
-
-  // Scale pupils and eyes with volume
-  const pupilScale=1.3+avg*0.6;
-  const eyeScale=1.1+avg*0.12;
-  pupilEls.forEach(p=>{p.style.transition='transform .08s linear';p.style.transform=`scale(${pupilScale})`;p.style.transformBox='fill-box';p.style.transformOrigin='center'});
-  eyeEls.forEach(e=>{if(eyeState==='listening'){e.style.transition='transform .08s linear';e.style.transform=`scale(${eyeScale})`}});
-
-  // Subtle bounce on loud
-  if(avg>0.5&&!behaviorActive){
-    const bounce=avg*2;
-    eyesEl.style.transition='transform .05s linear';
-    eyesEl.style.transform=`translate(${roamX}px,${roamY-(bounce)}px)`;
-  }
-
-  requestAnimationFrame(animateVolume);
-}
-
-micBtn.addEventListener('click',()=>{
-  if(micToggledOn){stopMic()}
-  else{startMic()}
-});
-
-// ===================== TTS OUTPUT =====================
-// ---- Chrome TTS warm-up: unlock speechSynthesis on first user gesture ----
-// Chrome on HTTPS blocks speechSynthesis unless triggered by a real user gesture.
-// We fire a silent 0-length utterance on the first pointer interaction to pre-warm it.
-let ttsUnlocked=false;
-function unlockTTS(){
-  if(ttsUnlocked||!window.speechSynthesis)return;
-  ttsUnlocked=true;
-  const warmup=new SpeechSynthesisUtterance('');
-  warmup.volume=0;
-  window.speechSynthesis.speak(warmup);
-}
-document.addEventListener('pointerdown',unlockTTS,{once:true});
-document.addEventListener('keydown',unlockTTS,{once:true});
-
-// ---- Chrome TTS keep-alive: Chrome pauses speechSynthesis after ~15s ----
-// Fix: call resume() periodically while TTS is active.
-setInterval(()=>{
-  if(window.speechSynthesis&&ttsActive&&window.speechSynthesis.paused){
-    window.speechSynthesis.resume();
-  }
-},5000);
-
-// ---- Soft female voice selection ----
-let softVoice=null;
-const PREFERRED_VOICES=[
-  'samantha','karen','moira','tessa','zoe','victoria','fiona',   // macOS/iOS
-  'google uk english female','google us english female',          // Chrome
-  'microsoft zira','microsoft hazel','microsoft susan',          // Windows
-  'alice','amelie','anna','ellen','ioana','joana','laura',       // Other
-];
-
-function findSoftVoice(){
-  const voices=speechSynthesis.getVoices();
-  if(!voices.length)return;
-  // Try preferred voices first
-  for(const pref of PREFERRED_VOICES){
-    const found=voices.find(v=>v.name.toLowerCase().includes(pref));
-    if(found){softVoice=found;return}
-  }
-  // Fallback: any English female-sounding voice (heuristic: not "male"/"david"/"james"/"daniel"/"alex"/"tom"/"fred")
-  const maleNames=/male|david|james|daniel|alex|tom|fred|jorge|bruce|lee|rishi|aaron|albert|ralph|reed/i;
-  const english=voices.filter(v=>v.lang.startsWith('en'));
-  const fem=english.find(v=>!maleNames.test(v.name));
-  if(fem){softVoice=fem;return}
-  // Last resort: first English voice
-  if(english.length)softVoice=english[0];
-}
-
-// Voices load async in some browsers
-if(window.speechSynthesis){
-  findSoftVoice();
-  speechSynthesis.onvoiceschanged=findSoftVoice;
-}
-
-function speakText(text){
-  if(!window.speechSynthesis||!text)return;
-  speechSynthesis.cancel();
-  ttsActive=true;
-  if(micActive){try{recognition.stop()}catch(e){}}
-  setEyeState('speaking');
-
-  const utt=new SpeechSynthesisUtterance(text);
-  if(softVoice)utt.voice=softVoice;
-  utt.rate=0.92;   // slightly slower — more relaxed
-  utt.pitch=1.08;  // slightly higher — softer feel
-  utt.volume=0.85;  // not too loud
-
-  utt.onend=()=>{
-    ttsActive=false;
-    if(eyeState==='speaking')setEyeState(micToggledOn?'listening':'idle');
-    if(micToggledOn){setTimeout(()=>{if(micToggledOn&&!micActive){try{recognition.start()}catch(e){}}},400)}
-  };
-  utt.onerror=()=>{
-    ttsActive=false;
-    if(eyeState==='speaking')setEyeState(micToggledOn?'listening':'idle');
-    if(micToggledOn){setTimeout(()=>{if(micToggledOn&&!micActive){try{recognition.start()}catch(e){}}},400)}
-  };
-
-  speechSynthesis.speak(utt);
-}
-
-// ===================== TAP REACTIONS =====================
-let tapCount=0,tapTimer=null,longPressTimer=null,tapHandled=false;
-
-eyeEls.forEach(eye=>{
-  eye.style.cursor='pointer';
-
-  eye.addEventListener('pointerdown',(e)=>{
-    e.preventDefault();tapHandled=false;
-    // Long press detection
-    longPressTimer=setTimeout(()=>{
-      tapHandled=true;
-      // Slow affectionate blink
-      behaviorActive=true;
-      eyeEls.forEach(el=>{el.style.transition='transform .6s ease';el.style.transform='scaleY(0.06)'});
-      setTimeout(()=>{
-        eyeEls.forEach(el=>{el.style.transition='transform .4s ease';el.style.transform=''});
-        setTimeout(()=>{eyeEls.forEach(el=>el.style.transition='');behaviorActive=false},450);
-      },800);
-    },500);
-  });
-
-  eye.addEventListener('pointerup',()=>{
-    clearTimeout(longPressTimer);
-    if(tapHandled)return;
-    tapCount++;
-    clearTimeout(tapTimer);
-    tapTimer=setTimeout(()=>{
-      if(tapCount===1)singleTap(eye);
-      else if(tapCount>=2)doubleTap(eye);
-      tapCount=0;
-    },250);
-  });
-
-  eye.addEventListener('pointerleave',()=>{clearTimeout(longPressTimer)});
-});
-
-function singleTap(eye){
-  if(behaviorActive||emotionActive)return;
-  behaviorActive=true;
-  // Squish + bounce
-  eye.style.transition='transform .08s ease';
-  eye.style.transform='scaleY(0.5) scaleX(1.15)';
-  // Ripple effect
-  const rect=eye.getBoundingClientRect();
-  const fRect=face.getBoundingClientRect();
-  const ripple=document.createElement('div');
-  ripple.className='eye-ripple';
-  ripple.style.width=ripple.style.height=rect.width*0.8+'px';
-  ripple.style.left=(rect.left-fRect.left+rect.width/2-rect.width*0.4)+'px';
-  ripple.style.top=(rect.top-fRect.top+rect.height/2-rect.width*0.4)+'px';
-  face.appendChild(ripple);
-  setTimeout(()=>ripple.remove(),600);
-
-  setTimeout(()=>{
-    eye.style.transition='transform .15s cubic-bezier(.2,1.5,.5,1)';
-    eye.style.transform='scaleY(1.08) scaleX(0.95)';
-    setTimeout(()=>{
-      eye.style.transition='transform .2s ease';eye.style.transform='';
-      setTimeout(()=>{eye.style.transition='';behaviorActive=false},220);
-    },160);
-  },100);
-}
-
-function doubleTap(){
-  if(behaviorActive||emotionActive)return;
-  behaviorActive=true;
-  // Surprised reaction
-  eyeEls.forEach(e=>{e.style.transition='transform .1s ease';e.style.transform='scale(1.35)'});
-  pupilEls.forEach(p=>{p.style.transition='transform .1s ease';p.style.transform='scale(0.35)';p.style.transformBox='fill-box';p.style.transformOrigin='center'});
-  // Quick look around
-  setTimeout(()=>{
-    irisGroups.forEach(g=>{g.style.transition='transform .1s ease';g.style.transform='translate(-6px,0)'});
-    setTimeout(()=>{
-      irisGroups.forEach(g=>{g.style.transform='translate(6px,0)'});
-      setTimeout(()=>{
-        irisGroups.forEach(g=>{g.style.transition='transform .2s ease';g.style.transform='translate(0,0)'});
-        eyeEls.forEach(e=>{e.style.transition='transform .3s ease';e.style.transform=''});
-        pupilEls.forEach(p=>{p.style.transition='transform .3s ease';p.style.transform=''});
-        setTimeout(()=>{
-          eyeEls.forEach(e=>e.style.transition='');
-          pupilEls.forEach(p=>p.style.transition='');
-          irisGroups.forEach(g=>g.style.transition='');
-          behaviorActive=false;
-        },350);
-      },150);
-    },150);
-  },200);
-}
-
-// ===================== TIME-OF-DAY AWARENESS =====================
-let timePhase='day'; // dawn, morning, day, evening, night
-
-function getTimePhase(){
-  const h=new Date().getHours();
-  if(h>=5&&h<7)return 'dawn';
-  if(h>=7&&h<12)return 'morning';
-  if(h>=12&&h<17)return 'day';
-  if(h>=17&&h<20)return 'evening';
-  if(h>=20&&h<23)return 'night';
-  return 'latenight';
-}
-
-function applyTimePhase(){
-  const p=getTimePhase();
-  if(p===timePhase)return;
-  timePhase=p;
-  switch(p){
-    case 'dawn':
-      timeTint.style.background='radial-gradient(ellipse at 50% 80%,rgba(255,140,50,0.04),transparent 70%)';
-      break;
-    case 'morning':
-      timeTint.style.background='radial-gradient(ellipse at 50% 30%,rgba(255,220,100,0.03),transparent 60%)';
-      break;
-    case 'day':
-      timeTint.style.background='none';
-      break;
-    case 'evening':
-      timeTint.style.background='radial-gradient(ellipse at 50% 70%,rgba(180,80,200,0.05),transparent 60%)';
-      break;
-    case 'night':
-      timeTint.style.background='radial-gradient(ellipse at 50% 50%,rgba(20,20,80,0.08),transparent 50%)';
-      break;
-    case 'latenight':
-      timeTint.style.background='radial-gradient(ellipse at 50% 50%,rgba(10,10,40,0.12),transparent 50%)';
-      break;
-  }
-}
-
-// Sleepy behaviors at night
-function nightBehavior(){
-  if(eyeState!=='idle'||behaviorActive||emotionActive)return;
-  const p=getTimePhase();
-  if(p==='night'||p==='latenight'){
-    // Random droopy/yawn
-    if(Math.random()<0.3){
-      behaviorActive=true;
-      eyeEls.forEach(e=>{e.style.transition='transform 1.2s ease';e.style.transform='scaleY(0.2)'});
-      setTimeout(()=>{
-        eyeEls.forEach(e=>{e.style.transition='transform .8s ease';e.style.transform='scaleY(0.6)'});
-        setTimeout(()=>{
-          eyeEls.forEach(e=>{e.style.transition='transform .5s ease';e.style.transform=''});
-          setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');behaviorActive=false},500);
-        },2000);
-      },1500);
-    }
-  }
-}
-setInterval(nightBehavior,8000+Math.random()*12000);
-
-applyTimePhase();
-setInterval(applyTimePhase,60000); // Check every minute
-
-// ===================== IDLE SONG WHISPERS =====================
-let lastInteraction=Date.now();
-let whisperTimer=null;
-let whisperActive=false;
-let songAudio=null; // Currently playing Audio element
-let songs=[]; // [{name, blobUrl, audio}, ...]
-const IDLE_THRESHOLD=30000; // 30 seconds idle
-const DB_NAME='comp-songdb';
-const DB_STORE='songs';
-const DB_VERSION=2;
-
-// ---- IndexedDB for multiple song files ----
-function openSongDB(){
-  return new Promise((resolve,reject)=>{
-    const req=indexedDB.open(DB_NAME,DB_VERSION);
-    req.onupgradeneeded=(e)=>{
-      const db=e.target.result;
-      // Delete old store if upgrading from v1
-      if(db.objectStoreNames.contains(DB_STORE))db.deleteObjectStore(DB_STORE);
-      db.createObjectStore(DB_STORE,{keyPath:'id',autoIncrement:true});
-    };
-    req.onsuccess=(e)=>resolve(e.target.result);
-    req.onerror=(e)=>reject(e);
-  });
-}
-
-async function saveSongFiles(files){
-  const db=await openSongDB();
-  const tx=db.transaction(DB_STORE,'readwrite');
-  const store=tx.objectStore(DB_STORE);
-  for(const file of files){
-    store.add({name:file.name,blob:file});
-  }
-  await new Promise(r=>{tx.oncomplete=r});
-  db.close();
-  await loadSongsFromDB();
-}
-
-async function removeSong(id){
-  const db=await openSongDB();
-  const tx=db.transaction(DB_STORE,'readwrite');
-  tx.objectStore(DB_STORE).delete(id);
-  await new Promise(r=>{tx.oncomplete=r});
-  db.close();
-  // Clean up blob
-  const idx=songs.findIndex(s=>s.id===id);
-  if(idx>=0){URL.revokeObjectURL(songs[idx].blobUrl);songs.splice(idx,1)}
-  renderSongList();
-  if(songs.length===0){songClearAllBtn.style.display='none'}
-}
-
-async function clearAllSongs(){
-  const db=await openSongDB();
-  const tx=db.transaction(DB_STORE,'readwrite');
-  tx.objectStore(DB_STORE).clear();
-  await new Promise(r=>{tx.oncomplete=r});
-  db.close();
-  songs.forEach(s=>URL.revokeObjectURL(s.blobUrl));
-  songs=[];
-  songAudio=null;
-  renderSongList();
-  songClearAllBtn.style.display='none';
-}
-
-async function loadSongsFromDB(){
-  try{
-    const db=await openSongDB();
-    const tx=db.transaction(DB_STORE,'readonly');
-    const store=tx.objectStore(DB_STORE);
-    const req=store.getAll();
-    req.onsuccess=()=>{
-      // Clean up old blobs
-      songs.forEach(s=>URL.revokeObjectURL(s.blobUrl));
-      songs=[];
-      for(const record of req.result){
-        const blobUrl=URL.createObjectURL(record.blob);
-        const audio=new Audio(blobUrl);
-        audio.preload='auto';
-        songs.push({id:record.id,name:record.name,blobUrl,audio});
+      function startMic() {
+        if (!recognition || micActive) return;
+        micToggledOn = true;
+        try {
+          recognition.start();
+          // Get mic stream for volume analysis
+          navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            micStream = stream;
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            const src = audioCtx.createMediaStreamSource(stream);
+            src.connect(analyser);
+            animateVolume();
+          }).catch(() => { });
+        } catch (e) { console.warn('Mic start failed:', e) }
       }
-      db.close();
-      renderSongList();
-      songClearAllBtn.style.display=songs.length>0?'inline-block':'none';
-      // Re-schedule whispers
-      clearTimeout(whisperTimer);
+
+      function stopMic() {
+        micToggledOn = false;
+        micActive = false;
+        try { recognition.stop() } catch (e) { }
+        micBtn.classList.remove('listening');
+        interimText.classList.remove('visible');
+        if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null }
+        analyser = null;
+        if (eyeState === 'listening') setEyeState('idle');
+        pupilEls.forEach(p => {
+          p.style.transition = 'transform .3s ease'; p.style.transform = '';
+          setTimeout(() => { p.style.transition = '' }, 350)
+        });
+        eyeEls.forEach(e => {
+          if (!behaviorActive && !emotionActive) {
+            e.style.transition = 'transform .3s ease'; e.style.transform = '';
+            setTimeout(() => { e.style.transition = '' }, 350)
+          }
+        });
+      }
+
+      function animateVolume() {
+        if (!analyser || !micActive) return;
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(data);
+        let sum = 0; for (let i = 0; i < data.length; i++)sum += data[i];
+        const avg = sum / data.length / 255; // 0-1
+
+        // Scale pupils and eyes with volume
+        const pupilScale = 1.3 + avg * 0.6;
+        const eyeScale = 1.1 + avg * 0.12;
+        pupilEls.forEach(p => { p.style.transition = 'transform .08s linear'; p.style.transform = `scale(${pupilScale})`; p.style.transformBox = 'fill-box'; p.style.transformOrigin = 'center' });
+        eyeEls.forEach(e => { if (eyeState === 'listening') { e.style.transition = 'transform .08s linear'; e.style.transform = `scale(${eyeScale})` } });
+
+        // Subtle bounce on loud
+        if (avg > 0.5 && !behaviorActive) {
+          const bounce = avg * 2;
+          eyesEl.style.transition = 'transform .05s linear';
+          eyesEl.style.transform = `translate(${roamX}px,${roamY - (bounce)}px)`;
+        }
+
+        requestAnimationFrame(animateVolume);
+      }
+
+      micBtn.addEventListener('click', () => {
+        if (micToggledOn) { stopMic() }
+        else { startMic() }
+      });
+
+      // ===================== TTS OUTPUT =====================
+      // ---- Chrome TTS warm-up: unlock speechSynthesis on first user gesture ----
+      // Chrome on HTTPS blocks speechSynthesis unless triggered by a real user gesture.
+      // We fire a silent 0-length utterance on the first pointer interaction to pre-warm it.
+      let ttsUnlocked = false;
+      function unlockTTS() {
+        if (ttsUnlocked || !window.speechSynthesis) return;
+        ttsUnlocked = true;
+        // Must use a non-empty utterance — Android Chrome ignores empty/zero-length ones
+        const warmup = new SpeechSynthesisUtterance('\u200B'); // zero-width space — audibly silent
+        warmup.volume = 0;
+        warmup.rate = 10; // finish instantly
+        window.speechSynthesis.speak(warmup);
+        // Also kick off voice loading — Android doesn't populate voices until after first speak()
+        window.speechSynthesis.getVoices();
+      }
+      document.addEventListener('pointerdown', unlockTTS, { once: true });
+      document.addEventListener('keydown', unlockTTS, { once: true });
+      document.addEventListener('touchstart', unlockTTS, { once: true, passive: true });
+
+      // ---- Chrome TTS keep-alive: Chrome pauses speechSynthesis after ~15s ----
+      // Fix: call resume() periodically while TTS is active.
+      setInterval(() => {
+        if (window.speechSynthesis && ttsActive && window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+      }, 5000);
+
+      // ---- Soft female voice selection ----
+      let softVoice = null;
+      const PREFERRED_VOICES = [
+        'samantha', 'karen', 'moira', 'tessa', 'zoe', 'victoria', 'fiona',   // macOS/iOS
+        'google uk english female', 'google us english female',          // Chrome
+        'microsoft zira', 'microsoft hazel', 'microsoft susan',          // Windows
+        'alice', 'amelie', 'anna', 'ellen', 'ioana', 'joana', 'laura',       // Other
+      ];
+
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      function findSoftVoice() {
+        const voices = speechSynthesis.getVoices();
+        if (!voices.length) return;
+        // On mobile, ONLY use locally installed voices — network voices cause silent failures
+        const pool = isMobile ? voices.filter(v => v.localService !== false) : voices;
+        const candidates = pool.length ? pool : voices; // fallback to all if none local
+        // Try preferred voices first
+        for (const pref of PREFERRED_VOICES) {
+          const found = candidates.find(v => v.name.toLowerCase().includes(pref));
+          if (found) { softVoice = found; return }
+        }
+        // Fallback: any English female-sounding voice
+        const maleNames = /male|david|james|daniel|alex|tom|fred|jorge|bruce|lee|rishi|aaron|albert|ralph|reed/i;
+        const english = candidates.filter(v => v.lang.startsWith('en'));
+        const fem = english.find(v => !maleNames.test(v.name));
+        if (fem) { softVoice = fem; return }
+        // Last resort: first English voice (or first any voice if no English)
+        softVoice = english[0] || candidates[0] || null;
+      }
+
+      // Voices load async — onvoiceschanged fires reliably on desktop, less on Android
+      if (window.speechSynthesis) {
+        findSoftVoice();
+        speechSynthesis.onvoiceschanged = findSoftVoice;
+        // Android extra: retry voice load after a short delay
+        if (isMobile) setTimeout(findSoftVoice, 500);
+      }
+
+      function ttsFinished() {
+        ttsActive = false;
+        if (eyeState === 'speaking') setEyeState(micToggledOn ? 'listening' : 'idle');
+        if (micToggledOn) { setTimeout(() => { if (micToggledOn && !micActive) { try { recognition.start() } catch (e) { } } }, 400) }
+      }
+
+      function speakText(text) {
+        if (!window.speechSynthesis || !text) return;
+        speechSynthesis.cancel();
+        ttsActive = true;
+        if (micActive) { try { recognition.stop() } catch (e) { } }
+        setEyeState('speaking');
+
+        // Re-try voice selection in case voices loaded after init (common on Android)
+        if (!softVoice) findSoftVoice();
+
+        // ---- Split into sentences for mobile reliability ----
+        // Android Chrome fails silently on long single utterances.
+        // Chaining short sentences is far more reliable.
+        const raw = text.replace(/\n+/g, ' ').trim();
+        const sentences = raw.match(/[^.!?\n]+[.!?]*['"\u201D]?\s*/g) || [raw];
+        const chunks = sentences.map(s => s.trim()).filter(s => s.length > 0);
+        if (!chunks.length) { ttsFinished(); return }
+
+        let idx = 0;
+        function next() {
+          if (idx >= chunks.length) { ttsFinished(); return }
+          const utt = new SpeechSynthesisUtterance(chunks[idx++]);
+          // Only assign voice if we have one — on Android, bad voice causes silent fail
+          if (softVoice) utt.voice = softVoice;
+          utt.rate = 0.92;
+          utt.pitch = 1.08;
+          utt.volume = 0.85;
+          utt.onend = next;
+          utt.onerror = (e) => {
+            console.warn('TTS chunk error:', e.error);
+            // If voice caused error, clear it and retry this chunk without a voice
+            if (e.error === 'voice-unavailable' || e.error === 'synthesis-failed') {
+              softVoice = null;
+              const retry = new SpeechSynthesisUtterance(chunks[idx - 1]);
+              retry.rate = 0.92; retry.pitch = 1.08; retry.volume = 0.85;
+              retry.onend = next; retry.onerror = next;
+              speechSynthesis.speak(retry);
+            } else { next(); } // skip bad chunk, continue
+          };
+          speechSynthesis.speak(utt);
+        }
+        next();
+      }
+
+      // ===================== TAP REACTIONS =====================
+      let tapCount = 0, tapTimer = null, longPressTimer = null, tapHandled = false;
+
+      eyeEls.forEach(eye => {
+        eye.style.cursor = 'pointer';
+
+        eye.addEventListener('pointerdown', (e) => {
+          e.preventDefault(); tapHandled = false;
+          // Long press detection
+          longPressTimer = setTimeout(() => {
+            tapHandled = true;
+            // Slow affectionate blink
+            behaviorActive = true;
+            eyeEls.forEach(el => { el.style.transition = 'transform .6s ease'; el.style.transform = 'scaleY(0.06)' });
+            setTimeout(() => {
+              eyeEls.forEach(el => { el.style.transition = 'transform .4s ease'; el.style.transform = '' });
+              setTimeout(() => { eyeEls.forEach(el => el.style.transition = ''); behaviorActive = false }, 450);
+            }, 800);
+          }, 500);
+        });
+
+        eye.addEventListener('pointerup', () => {
+          clearTimeout(longPressTimer);
+          if (tapHandled) return;
+          tapCount++;
+          clearTimeout(tapTimer);
+          tapTimer = setTimeout(() => {
+            if (tapCount === 1) singleTap(eye);
+            else if (tapCount >= 2) doubleTap(eye);
+            tapCount = 0;
+          }, 250);
+        });
+
+        eye.addEventListener('pointerleave', () => { clearTimeout(longPressTimer) });
+      });
+
+      function singleTap(eye) {
+        if (behaviorActive || emotionActive) return;
+        behaviorActive = true;
+        // Squish + bounce
+        eye.style.transition = 'transform .08s ease';
+        eye.style.transform = 'scaleY(0.5) scaleX(1.15)';
+        // Ripple effect
+        const rect = eye.getBoundingClientRect();
+        const fRect = face.getBoundingClientRect();
+        const ripple = document.createElement('div');
+        ripple.className = 'eye-ripple';
+        ripple.style.width = ripple.style.height = rect.width * 0.8 + 'px';
+        ripple.style.left = (rect.left - fRect.left + rect.width / 2 - rect.width * 0.4) + 'px';
+        ripple.style.top = (rect.top - fRect.top + rect.height / 2 - rect.width * 0.4) + 'px';
+        face.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+
+        setTimeout(() => {
+          eye.style.transition = 'transform .15s cubic-bezier(.2,1.5,.5,1)';
+          eye.style.transform = 'scaleY(1.08) scaleX(0.95)';
+          setTimeout(() => {
+            eye.style.transition = 'transform .2s ease'; eye.style.transform = '';
+            setTimeout(() => { eye.style.transition = ''; behaviorActive = false }, 220);
+          }, 160);
+        }, 100);
+      }
+
+      function doubleTap() {
+        if (behaviorActive || emotionActive) return;
+        behaviorActive = true;
+        // Surprised reaction
+        eyeEls.forEach(e => { e.style.transition = 'transform .1s ease'; e.style.transform = 'scale(1.35)' });
+        pupilEls.forEach(p => { p.style.transition = 'transform .1s ease'; p.style.transform = 'scale(0.35)'; p.style.transformBox = 'fill-box'; p.style.transformOrigin = 'center' });
+        // Quick look around
+        setTimeout(() => {
+          irisGroups.forEach(g => { g.style.transition = 'transform .1s ease'; g.style.transform = 'translate(-6px,0)' });
+          setTimeout(() => {
+            irisGroups.forEach(g => { g.style.transform = 'translate(6px,0)' });
+            setTimeout(() => {
+              irisGroups.forEach(g => { g.style.transition = 'transform .2s ease'; g.style.transform = 'translate(0,0)' });
+              eyeEls.forEach(e => { e.style.transition = 'transform .3s ease'; e.style.transform = '' });
+              pupilEls.forEach(p => { p.style.transition = 'transform .3s ease'; p.style.transform = '' });
+              setTimeout(() => {
+                eyeEls.forEach(e => e.style.transition = '');
+                pupilEls.forEach(p => p.style.transition = '');
+                irisGroups.forEach(g => g.style.transition = '');
+                behaviorActive = false;
+              }, 350);
+            }, 150);
+          }, 150);
+        }, 200);
+      }
+
+      // ===================== TIME-OF-DAY AWARENESS =====================
+      let timePhase = 'day'; // dawn, morning, day, evening, night
+
+      function getTimePhase() {
+        const h = new Date().getHours();
+        if (h >= 5 && h < 7) return 'dawn';
+        if (h >= 7 && h < 12) return 'morning';
+        if (h >= 12 && h < 17) return 'day';
+        if (h >= 17 && h < 20) return 'evening';
+        if (h >= 20 && h < 23) return 'night';
+        return 'latenight';
+      }
+
+      function applyTimePhase() {
+        const p = getTimePhase();
+        if (p === timePhase) return;
+        timePhase = p;
+        switch (p) {
+          case 'dawn':
+            timeTint.style.background = 'radial-gradient(ellipse at 50% 80%,rgba(255,140,50,0.04),transparent 70%)';
+            break;
+          case 'morning':
+            timeTint.style.background = 'radial-gradient(ellipse at 50% 30%,rgba(255,220,100,0.03),transparent 60%)';
+            break;
+          case 'day':
+            timeTint.style.background = 'none';
+            break;
+          case 'evening':
+            timeTint.style.background = 'radial-gradient(ellipse at 50% 70%,rgba(180,80,200,0.05),transparent 60%)';
+            break;
+          case 'night':
+            timeTint.style.background = 'radial-gradient(ellipse at 50% 50%,rgba(20,20,80,0.08),transparent 50%)';
+            break;
+          case 'latenight':
+            timeTint.style.background = 'radial-gradient(ellipse at 50% 50%,rgba(10,10,40,0.12),transparent 50%)';
+            break;
+        }
+      }
+
+      // Sleepy behaviors at night
+      function nightBehavior() {
+        if (eyeState !== 'idle' || behaviorActive || emotionActive) return;
+        const p = getTimePhase();
+        if (p === 'night' || p === 'latenight') {
+          // Random droopy/yawn
+          if (Math.random() < 0.3) {
+            behaviorActive = true;
+            eyeEls.forEach(e => { e.style.transition = 'transform 1.2s ease'; e.style.transform = 'scaleY(0.2)' });
+            setTimeout(() => {
+              eyeEls.forEach(e => { e.style.transition = 'transform .8s ease'; e.style.transform = 'scaleY(0.6)' });
+              setTimeout(() => {
+                eyeEls.forEach(e => { e.style.transition = 'transform .5s ease'; e.style.transform = '' });
+                setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); behaviorActive = false }, 500);
+              }, 2000);
+            }, 1500);
+          }
+        }
+      }
+      setInterval(nightBehavior, 8000 + Math.random() * 12000);
+
+      applyTimePhase();
+      setInterval(applyTimePhase, 60000); // Check every minute
+
+      // ===================== IDLE SONG WHISPERS =====================
+      let lastInteraction = Date.now();
+      let whisperTimer = null;
+      let whisperActive = false;
+      let songAudio = null; // Currently playing Audio element
+      let songs = []; // [{name, blobUrl, audio}, ...]
+      const IDLE_THRESHOLD = 30000; // 30 seconds idle
+      const DB_NAME = 'comp-songdb';
+      const DB_STORE = 'songs';
+      const DB_VERSION = 2;
+
+      // ---- IndexedDB for multiple song files ----
+      function openSongDB() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open(DB_NAME, DB_VERSION);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            // Delete old store if upgrading from v1
+            if (db.objectStoreNames.contains(DB_STORE)) db.deleteObjectStore(DB_STORE);
+            db.createObjectStore(DB_STORE, { keyPath: 'id', autoIncrement: true });
+          };
+          req.onsuccess = (e) => resolve(e.target.result);
+          req.onerror = (e) => reject(e);
+        });
+      }
+
+      async function saveSongFiles(files) {
+        const db = await openSongDB();
+        const tx = db.transaction(DB_STORE, 'readwrite');
+        const store = tx.objectStore(DB_STORE);
+        for (const file of files) {
+          store.add({ name: file.name, blob: file });
+        }
+        await new Promise(r => { tx.oncomplete = r });
+        db.close();
+        await loadSongsFromDB();
+      }
+
+      async function removeSong(id) {
+        const db = await openSongDB();
+        const tx = db.transaction(DB_STORE, 'readwrite');
+        tx.objectStore(DB_STORE).delete(id);
+        await new Promise(r => { tx.oncomplete = r });
+        db.close();
+        // Clean up blob
+        const idx = songs.findIndex(s => s.id === id);
+        if (idx >= 0) { URL.revokeObjectURL(songs[idx].blobUrl); songs.splice(idx, 1) }
+        renderSongList();
+        if (songs.length === 0) { songClearAllBtn.style.display = 'none' }
+      }
+
+      async function clearAllSongs() {
+        const db = await openSongDB();
+        const tx = db.transaction(DB_STORE, 'readwrite');
+        tx.objectStore(DB_STORE).clear();
+        await new Promise(r => { tx.oncomplete = r });
+        db.close();
+        songs.forEach(s => URL.revokeObjectURL(s.blobUrl));
+        songs = [];
+        songAudio = null;
+        renderSongList();
+        songClearAllBtn.style.display = 'none';
+      }
+
+      async function loadSongsFromDB() {
+        try {
+          const db = await openSongDB();
+          const tx = db.transaction(DB_STORE, 'readonly');
+          const store = tx.objectStore(DB_STORE);
+          const req = store.getAll();
+          req.onsuccess = () => {
+            // Clean up old blobs
+            songs.forEach(s => URL.revokeObjectURL(s.blobUrl));
+            songs = [];
+            for (const record of req.result) {
+              const blobUrl = URL.createObjectURL(record.blob);
+              const audio = new Audio(blobUrl);
+              audio.preload = 'auto';
+              songs.push({ id: record.id, name: record.name, blobUrl, audio });
+            }
+            db.close();
+            renderSongList();
+            songClearAllBtn.style.display = songs.length > 0 ? 'inline-block' : 'none';
+            // Re-schedule whispers
+            clearTimeout(whisperTimer);
+            scheduleWhisper();
+          };
+        } catch (e) { console.warn('Failed to load songs:', e) }
+      }
+
+      function renderSongList() {
+        songListEl.innerHTML = '';
+        songs.forEach(s => {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim)';
+          const name = document.createElement('span');
+          name.style.cssText = 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+          name.textContent = s.name;
+          const del = document.createElement('button');
+          del.type = 'button';
+          del.textContent = 'x';
+          del.style.cssText = 'padding:2px 6px;border:1px solid rgba(255,80,80,.15);border-radius:4px;background:transparent;color:#b55;font-family:var(--font);font-size:10px;cursor:pointer;flex-shrink:0';
+          del.addEventListener('click', () => removeSong(s.id));
+          row.appendChild(name);
+          row.appendChild(del);
+          songListEl.appendChild(row);
+        });
+      }
+
+      // ---- Song file UI ----
+      songPickBtn.addEventListener('click', () => songFileInput.click());
+      songFileInput.addEventListener('change', () => {
+        const files = [...songFileInput.files];
+        if (files.length > 0) saveSongFiles(files);
+        songFileInput.value = '';
+      });
+      songClearAllBtn.addEventListener('click', clearAllSongs);
+
+      // ---- Pick a random song ----
+      function pickRandomSong() {
+        if (songs.length === 0) return null;
+        return songs[Math.floor(Math.random() * songs.length)];
+      }
+
+      // ---- Unlock audio on first user interaction (browser autoplay policy) ----
+      let audioUnlocked = false;
+      function unlockAudio() {
+        if (audioUnlocked) return;
+        // Try to unlock each song's audio element
+        songs.forEach(s => {
+          s.audio.muted = true;
+          s.audio.play().then(() => { s.audio.pause(); s.audio.muted = false; s.audio.currentTime = 0 }).catch(() => { });
+        });
+        try { const a = new (window.AudioContext || window.webkitAudioContext)(); const b = a.createBuffer(1, 1, 22050); const s = a.createBufferSource(); s.buffer = b; s.connect(a.destination); s.start(); audioUnlocked = true } catch (e) { }
+        if (songs.length > 0) audioUnlocked = true;
+      }
+      document.addEventListener('pointerdown', unlockAudio);
+      document.addEventListener('touchstart', unlockAudio);
+
+      function resetIdleTimer() {
+        lastInteraction = Date.now();
+        clearTimeout(whisperTimer);
+        scheduleWhisper();
+      }
+
+      function scheduleWhisper() {
+        if (songs.length === 0) return;
+        whisperTimer = setTimeout(() => {
+          if (Date.now() - lastInteraction >= IDLE_THRESHOLD && eyeState === 'idle' && !behaviorActive && !emotionActive && !whisperActive && !ttsActive) {
+            playSongIdle();
+          }
+          scheduleWhisper();
+        }, IDLE_THRESHOLD + Math.random() * 5000);
+      }
+
+      function playSongIdle() {
+        if (whisperActive || songs.length === 0) return;
+        whisperActive = true;
+
+        const picked = pickRandomSong();
+        songAudio = picked.audio;
+        const playDuration = 30;
+
+        // Random position in the song
+        const dur = songAudio.duration || 180;
+        songAudio.currentTime = Math.random() * Math.max(0, dur - playDuration);
+        songAudio.volume = 0.5;
+        songAudio.play().then(() => {
+          console.log('Playing:', picked.name, 'from', Math.round(songAudio.currentTime) + 's');
+        }).catch(e => {
+          console.warn('Song play blocked:', e.message);
+          whisperActive = false;
+        });
+
+        // Fade out after 30s
+        setTimeout(() => {
+          if (!songAudio || songAudio.paused) return;
+          let vol = songAudio.volume;
+          const fadeInterval = setInterval(() => {
+            vol -= 0.03;
+            if (vol <= 0) { clearInterval(fadeInterval); songAudio.pause(); songAudio.volume = 0.5; songAudio = null }
+            else { try { songAudio.volume = vol } catch (e) { clearInterval(fadeInterval) } }
+          }, 80);
+        }, (playDuration - 2.5) * 1000);
+
+        // Dreamy eyes while song plays
+        behaviorActive = true;
+        eyeEls.forEach(e => { e.style.transition = 'transform 1s ease'; e.style.transform = 'scaleY(0.65)' });
+        targetY = 2; targetX = (Math.random() - .5) * 4;
+
+        setTimeout(() => {
+          eyeEls.forEach(e => { e.style.transition = 'transform .5s ease'; e.style.transform = '' });
+          setTimeout(() => { eyeEls.forEach(e => e.style.transition = ''); behaviorActive = false; whisperActive = false }, 500);
+        }, playDuration * 1000 * 0.85);
+      }
+
+      // Stop currently playing song
+      function stopCurrentSong() {
+        if (songAudio && !songAudio.paused) { songAudio.pause(); songAudio.currentTime = 0 }
+        songs.forEach(s => { if (!s.audio.paused) { s.audio.pause(); s.audio.currentTime = 0 } });
+      }
+
+      // Track interactions for idle detection — also stop song if playing
+      document.addEventListener('pointerdown', () => { resetIdleTimer(); stopCurrentSong() });
+      document.addEventListener('keydown', resetIdleTimer);
+
+      // Stop everything when page is hidden or closed
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopCurrentSong();
+          if (window.speechSynthesis) speechSynthesis.cancel();
+          clearTimeout(whisperTimer);
+          whisperActive = false;
+        } else {
+          resetIdleTimer();
+        }
+      });
+      window.addEventListener('beforeunload', () => {
+        stopCurrentSong();
+        if (window.speechSynthesis) speechSynthesis.cancel();
+      });
+
+      // ===================== INIT =====================
+      buildMoodGrid();
+      applyMood(currentMood);
+      loadSongsFromDB();
       scheduleWhisper();
-    };
-  }catch(e){console.warn('Failed to load songs:',e)}
-}
+      setTimeout(() => moodOverlay.classList.add('open'), 300);
+      if (!apiKey) { const iv = setInterval(() => { if (!moodOverlay.classList.contains('open')) { clearInterval(iv); setTimeout(() => modal.classList.add('open'), 400) } }, 200) }
 
-function renderSongList(){
-  songListEl.innerHTML='';
-  songs.forEach(s=>{
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim)';
-    const name=document.createElement('span');
-    name.style.cssText='flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
-    name.textContent=s.name;
-    const del=document.createElement('button');
-    del.type='button';
-    del.textContent='x';
-    del.style.cssText='padding:2px 6px;border:1px solid rgba(255,80,80,.15);border-radius:4px;background:transparent;color:#b55;font-family:var(--font);font-size:10px;cursor:pointer;flex-shrink:0';
-    del.addEventListener('click',()=>removeSong(s.id));
-    row.appendChild(name);
-    row.appendChild(del);
-    songListEl.appendChild(row);
-  });
-}
-
-// ---- Song file UI ----
-songPickBtn.addEventListener('click',()=>songFileInput.click());
-songFileInput.addEventListener('change',()=>{
-  const files=[...songFileInput.files];
-  if(files.length>0)saveSongFiles(files);
-  songFileInput.value='';
-});
-songClearAllBtn.addEventListener('click',clearAllSongs);
-
-// ---- Pick a random song ----
-function pickRandomSong(){
-  if(songs.length===0)return null;
-  return songs[Math.floor(Math.random()*songs.length)];
-}
-
-// ---- Unlock audio on first user interaction (browser autoplay policy) ----
-let audioUnlocked=false;
-function unlockAudio(){
-  if(audioUnlocked)return;
-  // Try to unlock each song's audio element
-  songs.forEach(s=>{
-    s.audio.muted=true;
-    s.audio.play().then(()=>{s.audio.pause();s.audio.muted=false;s.audio.currentTime=0}).catch(()=>{});
-  });
-  try{const a=new(window.AudioContext||window.webkitAudioContext)();const b=a.createBuffer(1,1,22050);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start();audioUnlocked=true}catch(e){}
-  if(songs.length>0)audioUnlocked=true;
-}
-document.addEventListener('pointerdown',unlockAudio);
-document.addEventListener('touchstart',unlockAudio);
-
-function resetIdleTimer(){
-  lastInteraction=Date.now();
-  clearTimeout(whisperTimer);
-  scheduleWhisper();
-}
-
-function scheduleWhisper(){
-  if(songs.length===0)return;
-  whisperTimer=setTimeout(()=>{
-    if(Date.now()-lastInteraction>=IDLE_THRESHOLD&&eyeState==='idle'&&!behaviorActive&&!emotionActive&&!whisperActive&&!ttsActive){
-      playSongIdle();
-    }
-    scheduleWhisper();
-  },IDLE_THRESHOLD+Math.random()*5000);
-}
-
-function playSongIdle(){
-  if(whisperActive||songs.length===0)return;
-  whisperActive=true;
-
-  const picked=pickRandomSong();
-  songAudio=picked.audio;
-  const playDuration=30;
-
-  // Random position in the song
-  const dur=songAudio.duration||180;
-  songAudio.currentTime=Math.random()*Math.max(0,dur-playDuration);
-  songAudio.volume=0.5;
-  songAudio.play().then(()=>{
-    console.log('Playing:',picked.name,'from',Math.round(songAudio.currentTime)+'s');
-  }).catch(e=>{
-    console.warn('Song play blocked:',e.message);
-    whisperActive=false;
-  });
-
-  // Fade out after 30s
-  setTimeout(()=>{
-    if(!songAudio||songAudio.paused)return;
-    let vol=songAudio.volume;
-    const fadeInterval=setInterval(()=>{
-      vol-=0.03;
-      if(vol<=0){clearInterval(fadeInterval);songAudio.pause();songAudio.volume=0.5;songAudio=null}
-      else{try{songAudio.volume=vol}catch(e){clearInterval(fadeInterval)}}
-    },80);
-  },(playDuration-2.5)*1000);
-
-  // Dreamy eyes while song plays
-  behaviorActive=true;
-  eyeEls.forEach(e=>{e.style.transition='transform 1s ease';e.style.transform='scaleY(0.65)'});
-  targetY=2;targetX=(Math.random()-.5)*4;
-
-  setTimeout(()=>{
-    eyeEls.forEach(e=>{e.style.transition='transform .5s ease';e.style.transform=''});
-    setTimeout(()=>{eyeEls.forEach(e=>e.style.transition='');behaviorActive=false;whisperActive=false},500);
-  },playDuration*1000*0.85);
-}
-
-// Stop currently playing song
-function stopCurrentSong(){
-  if(songAudio&&!songAudio.paused){songAudio.pause();songAudio.currentTime=0}
-  songs.forEach(s=>{if(!s.audio.paused){s.audio.pause();s.audio.currentTime=0}});
-}
-
-// Track interactions for idle detection — also stop song if playing
-document.addEventListener('pointerdown',()=>{resetIdleTimer();stopCurrentSong()});
-document.addEventListener('keydown',resetIdleTimer);
-
-// Stop everything when page is hidden or closed
-document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){
-    stopCurrentSong();
-    if(window.speechSynthesis)speechSynthesis.cancel();
-    clearTimeout(whisperTimer);
-    whisperActive=false;
-  }else{
-    resetIdleTimer();
-  }
-});
-window.addEventListener('beforeunload',()=>{
-  stopCurrentSong();
-  if(window.speechSynthesis)speechSynthesis.cancel();
-});
-
-// ===================== INIT =====================
-buildMoodGrid();
-applyMood(currentMood);
-loadSongsFromDB();
-scheduleWhisper();
-setTimeout(()=>moodOverlay.classList.add('open'),300);
-if(!apiKey){const iv=setInterval(()=>{if(!moodOverlay.classList.contains('open')){clearInterval(iv);setTimeout(()=>modal.classList.add('open'),400)}},200)}
-
-})();
-</script>
+    })();
+  </script>
 </body>
+
 </html>
